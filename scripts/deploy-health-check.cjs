@@ -20,7 +20,7 @@ function checkBuildHealth() {
     execSync('npm run clean', { stdio: 'inherit' });
     
     // Run build with timing
-    console.log('🏗️  Running optimized build...');
+    console.log('🏗️  Running optimized Webpack build...');
     const startTime = Date.now();
     execSync('npm run build', { stdio: 'inherit' });
     const buildTime = Date.now() - startTime;
@@ -34,9 +34,13 @@ function checkBuildHealth() {
     console.log(`   🚀 Status: HEALTHY`);
     
     // Check for common issues
-    if (buildTime > 60000) {
-      console.log('⚠️  Warning: Build time exceeds 60s');
+    if (buildTime > 120000) {
+      console.log('⚠️  Warning: Build time exceeds 2 minutes');
     }
+    
+    // Check for webpack-specific optimizations
+    const assetCount = execSync('find dist -name "*.js" | wc -l', { encoding: 'utf8' }).trim();
+    console.log(`   📊 JavaScript Assets: ${assetCount}`);
     
     return true;
   } catch (error) {
@@ -59,9 +63,24 @@ function checkDependencies() {
   }
 }
 
+function checkWebpackConfig() {
+  console.log('\n⚙️  Checking Webpack configuration...');
+  
+  try {
+    execSync('webpack --config webpack.config.cjs --mode=production --dry-run', { stdio: 'pipe' });
+    console.log('✅ Webpack configuration is valid');
+  } catch (error) {
+    console.log('❌ Webpack configuration error');
+    return false;
+  }
+  
+  return true;
+}
+
 function main() {
   const isHealthy = checkBuildHealth();
   checkDependencies();
+  checkWebpackConfig();
   
   console.log('\n🎯 Deployment Readiness:', isHealthy ? 'READY' : 'NEEDS ATTENTION');
   process.exit(isHealthy ? 0 : 1);
