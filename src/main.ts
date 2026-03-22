@@ -1,5 +1,5 @@
 import './index.css';
-import { createIcons, Github, Linkedin, Mail, ArrowRight, Download, Code2, Terminal, ExternalLink, ArrowLeft, Send, Bot, User, Loader2, CheckCircle2, ChevronLeft, ChevronRight, X, Sparkles, Menu, Cpu, BookOpen, Activity, Play, Search, WifiOff, Star, MessageSquare, Zap, ShieldCheck, Layout, Database, Server, Gamepad2 } from 'lucide';
+import { createIcons, Github, Linkedin, Mail, ArrowRight, Download, Code2, Terminal, ExternalLink, ArrowLeft, Send, Bot, User, Loader2, CheckCircle2, ChevronLeft, ChevronRight, X, Sparkles, Menu, Cpu, BookOpen, Activity, Play, WifiOff, Star, MessageSquare, Zap, ShieldCheck, Layout, Database, Server, Gamepad2 } from 'lucide';
 import { jsPDF } from 'jspdf';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
@@ -8,7 +8,8 @@ import * as CANNON from 'cannon-es';
 import confetti from 'canvas-confetti';
 import { GoogleGenAI } from "@google/genai";
 import mermaid from 'mermaid';
-import { initModalBridge, openProjectModal } from './modalBridge';
+import { initModalBridge } from './modalBridge';
+import { BackgroundSystem } from './BackgroundSystem';
 
 mermaid.initialize({
   startOnLoad: false,
@@ -21,6 +22,7 @@ gsap.registerPlugin(ScrollTrigger);
 
 // --- State ---
 let currentTheme = localStorage.getItem('portfolio-theme') || 'emerald';
+let backgroundSystem: BackgroundSystem | null = null;
 
 const experience = [
   {
@@ -301,7 +303,17 @@ async function router() {
     });
 
     initCustomCursor();
-    initThreeWallpaper();
+    
+    // Initialize Advanced Background
+    const bgContainer = document.getElementById('wallpaper-container');
+    if (bgContainer && !backgroundSystem) {
+      backgroundSystem = new BackgroundSystem({
+        container: bgContainer,
+        primaryColor: getComputedStyle(document.documentElement).getPropertyValue('--primary').trim() || '#10b981',
+        theme: currentTheme
+      });
+    }
+
     initHero3D();
     initScrollProgress();
     initAnimations();
@@ -358,59 +370,7 @@ function initHero3D() {
 }
 
 // --- Background Animation (Three.js) ---
-function initThreeWallpaper() {
-  const container = document.getElementById('wallpaper-container');
-  if (!container) return;
 
-  const scene = new THREE.Scene();
-  const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-  const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
-  renderer.setSize(window.innerWidth, window.innerHeight);
-  renderer.setPixelRatio(window.devicePixelRatio);
-  container.appendChild(renderer.domElement);
-
-  const geometry = new THREE.BufferGeometry();
-  const vertices = [];
-  for (let i = 0; i < 2000; i++) {
-    vertices.push(
-      THREE.MathUtils.randFloatSpread(2000),
-      THREE.MathUtils.randFloatSpread(2000),
-      THREE.MathUtils.randFloatSpread(2000)
-    );
-  }
-  geometry.setAttribute('position', new THREE.Float32BufferAttribute(vertices, 3));
-  
-  const primaryColor = getComputedStyle(document.documentElement).getPropertyValue('--primary').trim() || '#10b981';
-  const material = new THREE.PointsMaterial({ color: primaryColor, size: 2, transparent: true, opacity: 0.5 });
-  const points = new THREE.Points(geometry, material);
-  scene.add(points);
-
-  camera.position.z = 500;
-
-  let mouseX = 0;
-  let mouseY = 0;
-
-  window.addEventListener('mousemove', (e) => {
-    mouseX = (e.clientX - window.innerWidth / 2) / 1000;
-    mouseY = (e.clientY - window.innerHeight / 2) / 1000;
-  });
-
-  function animate() {
-    requestAnimationFrame(animate);
-    if (!navigator.onLine || currentTheme === 'light') return; // Pause graphics when offline or in light mode
-    points.rotation.x += 0.0005 + mouseY;
-    points.rotation.y += 0.0005 + mouseX;
-    renderer.render(scene, camera);
-  }
-
-  window.addEventListener('resize', () => {
-    camera.aspect = window.innerWidth / window.innerHeight;
-    camera.updateProjectionMatrix();
-    renderer.setSize(window.innerWidth, window.innerHeight);
-  });
-
-  animate();
-}
 
 function initAnimations() {
   // Hero Animation
@@ -1511,6 +1471,12 @@ async function initHome() {
         bgVideo?.play().catch(() => {});
       } else {
         bgVideo?.pause();
+      }
+
+      // Update Advanced Background Theme
+      if (backgroundSystem) {
+        const newPrimary = getComputedStyle(document.documentElement).getPropertyValue('--primary').trim();
+        backgroundSystem.updateTheme(newPrimary, themeId);
       }
       
       // Update icons color if needed
