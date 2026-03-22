@@ -1,6 +1,5 @@
 import './index.css';
 import { createIcons, Github, Linkedin, Mail, ArrowRight, Download, Code2, Terminal, ExternalLink, ArrowLeft, Send, Bot, User, Loader2, CheckCircle2, ChevronLeft, ChevronRight, X, Sparkles, Menu, Cpu, BookOpen, Activity, Play, WifiOff, Star, MessageSquare, Zap, ShieldCheck, Layout, Database, Server, Gamepad2 } from 'lucide';
-import { jsPDF } from 'jspdf';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import * as THREE from 'three';
@@ -1653,15 +1652,18 @@ async function initHome() {
   });
 
   document.getElementById('download-cv')?.addEventListener('click', () => {
-    generateCV('download');
+    const link = document.createElement('a');
+    link.href = '/cv.jpeg';
+    link.download = 'Rohan_Krishnagoudar_CV.jpeg';
+    link.click();
   });
 
   document.getElementById('see-cv')?.addEventListener('click', () => {
-    generateCV('view');
+    window.open('/cv.jpeg', '_blank');
   });
 
   document.getElementById('view-resume')?.addEventListener('click', () => {
-    generateCV('view');
+    window.open('/rohan.pdf', '_blank');
   });
 
   document.getElementById('build-cv')?.addEventListener('click', () => {
@@ -1682,52 +1684,7 @@ async function initHome() {
     modal.querySelector('.close-modal')?.addEventListener('click', () => modal.remove());
   });
 
-  function generateCV(action: 'download' | 'view') {
-    const doc = new jsPDF();
-    doc.setFontSize(24);
-    doc.setTextColor(16, 185, 129); 
-    doc.text("ROHAN KRISHNAGOUDAR", 20, 20);
-    doc.setFontSize(12);
-    doc.setTextColor(100, 100, 100);
-    doc.text("Full Stack Developer | Class 11 Student", 20, 28);
-    doc.text("Email: rkg22122008@gmail.com", 20, 34);
-    doc.setLineWidth(0.5);
-    doc.setDrawColor(200, 200, 200);
-    doc.line(20, 40, 190, 40);
-    doc.setFontSize(16);
-    doc.setTextColor(0, 0, 0);
-    doc.text("EDUCATION", 20, 55);
-    doc.setFontSize(12);
-    doc.text("Class 11 (Science & Computer Science)", 20, 65);
-    doc.setFontSize(10);
-    doc.setTextColor(100, 100, 100);
-    doc.text("2024 - Present", 160, 65);
-    doc.text("Focusing on Advanced Mathematics, Physics, and Computer Science.", 20, 70);
-    
-    doc.setFontSize(16);
-    doc.setTextColor(0, 0, 0);
-    doc.text("EXPERIENCE", 20, 90);
-    doc.setFontSize(12);
-    doc.text("Freelance Full Stack Developer", 20, 100);
-    doc.setFontSize(10);
-    doc.setTextColor(100, 100, 100);
-    doc.text("Built multiple production-ready web applications using React and Node.js.", 20, 107);
-    
-    doc.setFontSize(16);
-    doc.setTextColor(0, 0, 0);
-    doc.text("SKILLS", 20, 125);
-    doc.setFontSize(10);
-    doc.setTextColor(100, 100, 100);
-    doc.text("Frontend: React, TypeScript, Tailwind CSS, Three.js", 20, 135);
-    doc.text("Backend: Node.js, Express, PostgreSQL, Firebase", 20, 142);
-    doc.text("Tools: Git, Docker, Gemini AI, Vite", 20, 149);
 
-    if (action === 'download') {
-      doc.save("Rohan_Krishnagoudar_CV.pdf");
-    } else {
-      window.open(doc.output('bloburl'), '_blank');
-    }
-  }
 
   // Contact Form Handling
   const contactForm = document.getElementById('contact-form') as HTMLFormElement;
