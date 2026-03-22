@@ -1927,13 +1927,14 @@ async function initHome() {
       } catch (error) {
         console.error("AI Error:", error);
         loadingDiv.remove();
-        addMessage(getOffl  // Carousel logic removed
-size', updateCarousel);
+        addMessage("I'm a bit lost in the cloud right now! ☁️", false);
+      }
+    });
 
-    filterProjects();
     createIcons({ icons: { Github, Linkedin, Mail, ArrowRight, Download, Code2, Terminal, ExternalLink, ArrowLeft, Send, Bot, User, Loader2, CheckCircle2, ChevronLeft, ChevronRight, Sparkles, X, Menu, Cpu, BookOpen, Activity, Play, Star, MessageSquare, Zap, ShieldCheck, Layout, Database, Server } });
   }
 }
+
 
 
 
