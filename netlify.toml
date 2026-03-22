@@ -6,9 +6,3 @@
   from = "/*"
   to = "/index.html"
   status = 200
-
-# Disable problematic plugins
-[[plugins]]
-  package = "@21yunbox/netlify-plugin-21yunbox-deploy-to-china-cdn"
-  [plugins.inputs]
-    disabled = true
