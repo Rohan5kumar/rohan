@@ -1,5 +1,5 @@
 import './index.css';
-import { createIcons, Github, Linkedin, Mail, ArrowRight, Download, Code2, Terminal, ExternalLink, ArrowLeft, Send, Bot, User, Loader2, CheckCircle2, ChevronLeft, ChevronRight, X, Sparkles, Menu, Cpu, BookOpen, Activity, Play, WifiOff, Star, MessageSquare, Zap, ShieldCheck, Layout, Database, Server, Gamepad2 } from 'lucide';
+import { createIcons, Github, Linkedin, Mail, ArrowRight, Download, Code2, Terminal, ExternalLink, ArrowLeft, Send, Bot, User, Loader2, CheckCircle2, ChevronLeft, ChevronRight, X, Sparkles, Menu, Cpu, BookOpen, Activity, Play, WifiOff, Star, MessageSquare, Zap, ShieldCheck, Layout, Database, Server, Gamepad2, Award } from 'lucide';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import * as THREE from 'three';
@@ -22,6 +22,37 @@ gsap.registerPlugin(ScrollTrigger);
 // --- State ---
 let currentTheme = localStorage.getItem('portfolio-theme') || 'emerald';
 
+const ventures = [
+  {
+    company: 'Explyra',
+    role: 'Co-founder & Lead Architect',
+    period: '2024 - Present',
+    description: 'Revolutionizing expense management through AI-driven infrastructure. Built a high-performance system capable of processing real-time financial data with zero-latency overhead.',
+    type: 'founder',
+    achievements: [
+      'Designed scalable architecture handling 10K+ transactions/sec',
+      'Implemented AI engine reducing manual entry by 80%',
+      'Led product roadmap from MVP to scaling phase'
+    ],
+    tech: ['Node.js', 'AI Integration', 'Secure Data Architecture', 'Real-time Processing'],
+    status: 'Active Development'
+  },
+  {
+    company: 'Lumina AI',
+    role: 'Full Stack Developer & System Designer',
+    period: '2025 - Present',
+    description: 'Advanced AI-powered analytics platform with intelligent data visualization and predictive modeling capabilities.',
+    type: 'venture',
+    achievements: [
+      'Built real-time data processing pipeline',
+      'Implemented responsive dashboard system',
+      'Optimized query performance by 60%'
+    ],
+    tech: ['React', 'Python', 'PostgreSQL', 'WebSocket'],
+    status: 'Scaling'
+  }
+];
+
 const experience = [
   {
     company: 'TechVision AI',
@@ -36,13 +67,6 @@ const experience = [
     period: '2024 - 2025',
     description: 'Contributed to the development of high-traffic e-commerce platforms and client-facing dashboards.',
     achievements: ['Developed 5+ reusable UI components', 'Optimized database queries for faster load times']
-  },
-  {
-    company: 'Freelance',
-    role: 'Web Developer',
-    period: '2023 - 2024',
-    description: 'Built custom websites and web applications for various clients across different industries.',
-    achievements: ['Delivered 10+ successful projects', 'Maintained 100% client satisfaction rate']
   }
 ];
 
@@ -512,6 +536,335 @@ document.addEventListener('DOMContentLoaded', () => {
   router();
 });
 
+// --- Explyra Architecture Modal ---
+function showExplyraArchitecture() {
+  const modal = document.createElement('div');
+  modal.className = 'fixed inset-0 bg-black/80 backdrop-blur-sm z-[300] flex items-center justify-center p-6';
+  modal.innerHTML = `
+    <div class="glass max-w-4xl w-full max-h-[90vh] overflow-auto rounded-[2.5rem] border-cyan-400/20 p-8 relative">
+      <button onclick="this.closest('.fixed').remove()" class="absolute top-4 right-4 p-2 glass rounded-full hover:bg-red-500/20 text-red-400 transition-colors">
+        <i data-lucide="x"></i>
+      </button>
+      
+      <div class="mb-8">
+        <h3 class="text-3xl font-bold text-white mb-2">Explyra System Architecture</h3>
+        <p class="text-neutral-400">AI-Driven Expense Management Infrastructure</p>
+      </div>
+      
+      <!-- Architecture Diagram using Mermaid -->
+      <div class="glass p-6 rounded-xl mb-6 border border-white/5">
+        <div class="mermaid" id="explyra-architecture">
+          graph TD
+            A[User Frontend<br/>React + TypeScript] --> B[API Gateway<br/>Express.js + Rate Limiting]
+            B --> C[AI Engine<br/>Python + OpenAI API]
+            B --> D[Auth Service<br/>JWT + OAuth 2.0]
+            B --> E[Data Processing<br/>Node.js + Queue System]
+            C --> F[Category Database<br/>PostgreSQL + Redis Cache]
+            E --> F
+            D --> G[User Database<br/>MongoDB + Encryption]
+            F --> H[Analytics Engine<br/>Real-time Processing]
+            G --> H
+            H --> I[Dashboard<br/>Data Visualization]
+            
+            style A fill:#06b6d4,stroke:#06b6d4,color:#fff
+            style B fill:#10b981,stroke:#10b981,color:#fff
+            style C fill:#8b5cf6,stroke:#8b5cf6,color:#fff
+            style D fill:#f59e0b,stroke:#f59e0b,color:#fff
+            style E fill:#ef4444,stroke:#ef4444,color:#fff
+            style F fill:#3b82f6,stroke:#3b82f6,color:#fff
+            style G fill:#10b981,stroke:#10b981,color:#fff
+            style H fill:#8b5cf6,stroke:#8b5cf6,color:#fff
+            style I fill:#06b6d4,stroke:#06b6d4,color:#fff
+        </div>
+      </div>
+      
+      <!-- System Specifications -->
+      <div class="grid md:grid-cols-2 gap-6 mb-6">
+        <div class="glass p-6 rounded-xl border border-white/5">
+          <h4 class="text-cyan-400 font-mono text-sm mb-4">Performance Specifications</h4>
+          <div class="space-y-3">
+            <div class="flex justify-between">
+              <span class="text-neutral-400 text-sm">Transaction Throughput</span>
+              <span class="text-white font-mono text-sm">10K+/sec</span>
+            </div>
+            <div class="flex justify-between">
+              <span class="text-neutral-400 text-sm">API Response Time</span>
+              <span class="text-white font-mono text-sm">&lt;100ms</span>
+            </div>
+            <div class="flex justify-between">
+              <span class="text-neutral-400 text-sm">Data Processing Latency</span>
+              <span class="text-white font-mono text-sm">&lt;50ms</span>
+            </div>
+            <div class="flex justify-between">
+              <span class="text-neutral-400 text-sm">System Uptime</span>
+              <span class="text-white font-mono text-sm">99.9%</span>
+            </div>
+          </div>
+        </div>
+        
+        <div class="glass p-6 rounded-xl border border-white/5">
+          <h4 class="text-cyan-400 font-mono text-sm mb-4">Security & Compliance</h4>
+          <div class="space-y-3">
+            <div class="flex justify-between">
+              <span class="text-neutral-400 text-sm">Data Encryption</span>
+              <span class="text-white font-mono text-sm">AES-256</span>
+            </div>
+            <div class="flex justify-between">
+              <span class="text-neutral-400 text-sm">Authentication</span>
+              <span class="text-white font-mono text-sm">OAuth 2.0 + JWT</span>
+            </div>
+            <div class="flex justify-between">
+              <span class="text-neutral-400 text-sm">Compliance</span>
+              <span class="text-white font-mono text-sm">GDPR + SOC2</span>
+            </div>
+            <div class="flex justify-between">
+              <span class="text-neutral-400 text-sm">Backup Strategy</span>
+              <span class="text-white font-mono text-sm">Real-time Replication</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Tech Stack Details -->
+      <div class="glass p-6 rounded-xl border border-white/5">
+        <h4 class="text-cyan-400 font-mono text-sm mb-4">Technology Stack</h4>
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <div>
+            <p class="text-xs font-mono text-neutral-500 mb-2">Frontend</p>
+            <div class="space-y-1">
+              <div class="text-xs text-white">React 18</div>
+              <div class="text-xs text-white">TypeScript</div>
+              <div class="text-xs text-white">Tailwind CSS</div>
+            </div>
+          </div>
+          <div>
+            <p class="text-xs font-mono text-neutral-500 mb-2">Backend</p>
+            <div class="space-y-1">
+              <div class="text-xs text-white">Node.js</div>
+              <div class="text-xs text-white">Express.js</div>
+              <div class="text-xs text-white">Python</div>
+            </div>
+          </div>
+          <div>
+            <p class="text-xs font-mono text-neutral-500 mb-2">Database</p>
+            <div class="space-y-1">
+              <div class="text-xs text-white">PostgreSQL</div>
+              <div class="text-xs text-white">MongoDB</div>
+              <div class="text-xs text-white">Redis</div>
+            </div>
+          </div>
+          <div>
+            <p class="text-xs font-mono text-neutral-500 mb-2">Infrastructure</p>
+            <div class="space-y-1">
+              <div class="text-xs text-white">Docker</div>
+              <div class="text-xs text-white">AWS</div>
+              <div class="text-xs text-white">CI/CD Pipeline</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
+  
+  document.body.appendChild(modal);
+  createIcons({ icons: { X } });
+  
+  // Initialize Mermaid diagram
+  if ((window as any).mermaid) {
+    const mermaidEl = document.getElementById('explyra-architecture');
+    if (mermaidEl) {
+      (window as any).mermaid.init(undefined, mermaidEl);
+    }
+  }
+}
+
+// --- Tech Stack Dashboard ---
+function showTechStackDashboard() {
+  const modal = document.createElement('div');
+  modal.className = 'fixed inset-0 bg-black/80 backdrop-blur-sm z-[300] flex items-center justify-center p-6';
+  modal.innerHTML = `
+    <div class="glass max-w-5xl w-full max-h-[90vh] overflow-auto rounded-[2.5rem] border-cyan-400/20 p-8 relative">
+      <button onclick="this.closest('.fixed').remove()" class="absolute top-4 right-4 p-2 glass rounded-full hover:bg-red-500/20 text-red-400 transition-colors">
+        <i data-lucide="x"></i>
+      </button>
+      
+      <div class="mb-8">
+        <h3 class="text-3xl font-bold text-white mb-2">Tech Stack & Tools Dashboard</h3>
+        <p class="text-neutral-400">System Architecture & Development Tools</p>
+      </div>
+      
+      <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <!-- Development Stack -->
+        <div class="glass p-6 rounded-xl border border-green-400/20">
+          <div class="flex items-center gap-2 mb-4">
+            <div class="w-2 h-2 bg-green-400 rounded-full"></div>
+            <h4 class="text-green-400 font-mono text-sm">Development</h4>
+          </div>
+          <div class="space-y-2">
+            <div class="flex justify-between items-center">
+              <span class="text-xs text-white">React</span>
+              <div class="w-16 h-1 bg-green-400/20 rounded">
+                <div class="w-14 h-1 bg-green-400 rounded"></div>
+              </div>
+            </div>
+            <div class="flex justify-between items-center">
+              <span class="text-xs text-white">Node.js</span>
+              <div class="w-16 h-1 bg-green-400/20 rounded">
+                <div class="w-15 h-1 bg-green-400 rounded"></div>
+              </div>
+            </div>
+            <div class="flex justify-between items-center">
+              <span class="text-xs text-white">TypeScript</span>
+              <div class="w-16 h-1 bg-green-400/20 rounded">
+                <div class="w-13 h-1 bg-green-400 rounded"></div>
+              </div>
+            </div>
+            <div class="flex justify-between items-center">
+              <span class="text-xs text-white">Python</span>
+              <div class="w-16 h-1 bg-green-400/20 rounded">
+                <div class="w-12 h-1 bg-green-400 rounded"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Cloud & DevOps -->
+        <div class="glass p-6 rounded-xl border border-blue-400/20">
+          <div class="flex items-center gap-2 mb-4">
+            <div class="w-2 h-2 bg-blue-400 rounded-full"></div>
+            <h4 class="text-blue-400 font-mono text-sm">Cloud & DevOps</h4>
+          </div>
+          <div class="space-y-2">
+            <div class="flex justify-between items-center">
+              <span class="text-xs text-white">Netlify</span>
+              <div class="w-16 h-1 bg-blue-400/20 rounded">
+                <div class="w-14 h-1 bg-blue-400 rounded"></div>
+              </div>
+            </div>
+            <div class="flex justify-between items-center">
+              <span class="text-xs text-white">Firebase</span>
+              <div class="w-16 h-1 bg-blue-400/20 rounded">
+                <div class="w-12 h-1 bg-blue-400 rounded"></div>
+              </div>
+            </div>
+            <div class="flex justify-between items-center">
+              <span class="text-xs text-white">Linux (Ubuntu)</span>
+              <div class="w-16 h-1 bg-blue-400/20 rounded">
+                <div class="w-13 h-1 bg-blue-400 rounded"></div>
+              </div>
+            </div>
+            <div class="flex justify-between items-center">
+              <span class="text-xs text-white">Docker</span>
+              <div class="w-16 h-1 bg-blue-400/20 rounded">
+                <div class="w-11 h-1 bg-blue-400 rounded"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Architecture & Design -->
+        <div class="glass p-6 rounded-xl border border-purple-400/20">
+          <div class="flex items-center gap-2 mb-4">
+            <div class="w-2 h-2 bg-purple-400 rounded-full"></div>
+            <h4 class="text-purple-400 font-mono text-sm">Architecture & Design</h4>
+          </div>
+          <div class="space-y-2">
+            <div class="flex justify-between items-center">
+              <span class="text-xs text-white">System Design</span>
+              <div class="w-16 h-1 bg-purple-400/20 rounded">
+                <div class="w-15 h-1 bg-purple-400 rounded"></div>
+              </div>
+            </div>
+            <div class="flex justify-between items-center">
+              <span class="text-xs text-white">UI/UX (Figma)</span>
+              <div class="w-16 h-1 bg-purple-400/20 rounded">
+                <div class="w-13 h-1 bg-purple-400 rounded"></div>
+              </div>
+            </div>
+            <div class="flex justify-between items-center">
+              <span class="text-xs text-white">Database Schema</span>
+              <div class="w-16 h-1 bg-purple-400/20 rounded">
+                <div class="w-14 h-1 bg-purple-400 rounded"></div>
+              </div>
+            </div>
+            <div class="flex justify-between items-center">
+              <span class="text-xs text-white">API Design</span>
+              <div class="w-16 h-1 bg-purple-400/20 rounded">
+                <div class="w-15 h-1 bg-purple-400 rounded"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Founder Tools -->
+        <div class="glass p-6 rounded-xl border border-cyan-400/20">
+          <div class="flex items-center gap-2 mb-4">
+            <div class="w-2 h-2 bg-cyan-400 rounded-full"></div>
+            <h4 class="text-cyan-400 font-mono text-sm">Founder Tools</h4>
+          </div>
+          <div class="space-y-2">
+            <div class="flex justify-between items-center">
+              <span class="text-xs text-white">Git/GitHub</span>
+              <div class="w-16 h-1 bg-cyan-400/20 rounded">
+                <div class="w-16 h-1 bg-cyan-400 rounded"></div>
+              </div>
+            </div>
+            <div class="flex justify-between items-center">
+              <span class="text-xs text-white">Agile Methodology</span>
+              <div class="w-16 h-1 bg-cyan-400/20 rounded">
+                <div class="w-14 h-1 bg-cyan-400 rounded"></div>
+              </div>
+            </div>
+            <div class="flex justify-between items-center">
+              <span class="text-xs text-white">Product Roadmapping</span>
+              <div class="w-16 h-1 bg-cyan-400/20 rounded">
+                <div class="w-13 h-1 bg-cyan-400 rounded"></div>
+              </div>
+            </div>
+            <div class="flex justify-between items-center">
+              <span class="text-xs text-white">Analytics</span>
+              <div class="w-16 h-1 bg-cyan-400/20 rounded">
+                <div class="w-12 h-1 bg-cyan-400 rounded"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Certifications Section -->
+      <div class="mt-8 glass p-6 rounded-xl border border-white/5">
+        <h4 class="text-cyan-400 font-mono text-sm mb-4">Verified Credentials</h4>
+        <div class="grid md:grid-cols-2 gap-4">
+          <div class="flex items-center gap-4 p-4 bg-green-500/10 rounded-xl border border-green-400/20">
+            <div class="w-12 h-12 bg-green-500/20 rounded-lg flex items-center justify-center">
+              <i data-lucide="award" class="text-green-400"></i>
+            </div>
+            <div>
+              <p class="text-white font-mono text-sm">MitanshuEDU Certification</p>
+              <p class="text-neutral-400 text-xs">Advanced Web Development & System Architecture</p>
+              <a href="https://github.com/Rohan5kumar/certificate-projects" target="_blank" class="text-green-400 text-xs font-mono hover:underline">View Applied Projects →</a>
+            </div>
+          </div>
+          
+          <div class="flex items-center gap-4 p-4 bg-blue-500/10 rounded-xl border border-blue-400/20">
+            <div class="w-12 h-12 bg-blue-500/20 rounded-lg flex items-center justify-center">
+              <i data-lucide="shield-check" class="text-blue-400"></i>
+            </div>
+            <div>
+              <p class="text-white font-mono text-sm">System Architecture Expertise</p>
+              <p class="text-neutral-400 text-xs">Scalable Infrastructure & Distributed Systems</p>
+              <a href="#founder" class="text-blue-400 text-xs font-mono hover:underline">View Explyra Architecture →</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
+  
+  document.body.appendChild(modal);
+  createIcons({ icons: { X, Award: Award, ShieldCheck } });
+}
+
 // --- Helpers ---
 
 function setupMobileMenu() {
@@ -637,6 +990,9 @@ function renderHome() {
             <button id="view-resume" class="w-full sm:w-auto bg-cyan-400 hover:bg-cyan-500 text-bg font-bold py-4 px-8 rounded-full transition-all transform hover:scale-105 flex items-center justify-center gap-2 shadow-[0_0_20px_rgba(34,211,238,0.3)]">
               Resume <i data-lucide="file-text"></i>
             </button>
+            <button onclick="showTechStackDashboard()" class="w-full sm:w-auto glass hover:bg-purple-500/20 text-purple-400 font-mono py-4 px-8 rounded-full transition-all transform hover:scale-105 flex items-center justify-center gap-2 border border-purple-400/20 hover:border-purple-400/40">
+              Tech Stack <i data-lucide="layout"></i>
+            </button>
             <a href="#contact" class="w-full sm:w-auto bg-ink hover:bg-opacity-90 text-bg font-bold py-4 px-8 rounded-full transition-all transform hover:scale-105 flex items-center justify-center gap-2 shadow-lg">
               Let's Talk <i data-lucide="message-square"></i>
             </a>
@@ -661,6 +1017,111 @@ function renderHome() {
                 <p class="text-white text-sm font-bold">System Architect</p>
               </div>
             </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Founder & Leadership Section -->
+      <section id="founder" class="mb-32">
+        <div class="max-w-7xl mx-auto px-6">
+          <div class="text-center mb-16">
+            <div class="inline-flex items-center gap-2 px-4 py-2 glass rounded-full text-cyan-400 text-xs font-mono uppercase tracking-widest border-cyan-400/20 mb-6">
+              <span class="relative flex h-2 w-2">
+                <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyan-400 opacity-75"></span>
+                <span class="relative inline-flex rounded-full h-2 w-2 bg-cyan-400"></span>
+              </span>
+              Founder & Leadership
+            </div>
+            <h2 class="text-4xl sm:text-5xl font-bold tracking-tighter leading-tight mb-6">
+              Building <span class="text-cyan-400">Ventures</span> & <br/>
+              <span class="text-neutral-500">Infrastructure</span>
+            </h2>
+          </div>
+
+          <div class="grid lg:grid-cols-2 gap-8">
+            ${ventures.map(venture => `
+              <div class="glass p-8 rounded-[2.5rem] border-cyan-400/20 relative overflow-hidden group hover:border-cyan-400/40 transition-all duration-700 ${venture.type === 'founder' ? 'ring-2 ring-cyan-400/20' : ''}">
+                ${venture.type === 'founder' ? '<div class="absolute top-4 right-4 px-3 py-1 bg-cyan-400/20 text-cyan-400 text-xs font-mono rounded-full border border-cyan-400/30">Co-founded</div>' : ''}
+                
+                <div class="absolute -top-24 -right-24 w-48 h-48 bg-cyan-400/10 blur-3xl rounded-full group-hover:bg-cyan-400/20 transition-all duration-700"></div>
+                
+                <div class="relative z-10">
+                  <div class="flex items-start justify-between mb-6">
+                    <div>
+                      <h3 class="text-2xl font-bold text-white mb-2">${venture.company}</h3>
+                      <p class="text-cyan-400 font-mono text-sm">${venture.role}</p>
+                      <p class="text-neutral-500 text-xs font-mono mt-1">${venture.period}</p>
+                    </div>
+                    <div class="px-3 py-1 bg-green-500/20 text-green-400 text-xs font-mono rounded-full border border-green-400/30">
+                      ${venture.status}
+                    </div>
+                  </div>
+
+                  <p class="text-neutral-300 leading-relaxed mb-6">${venture.description}</p>
+
+                  <!-- System Specs Bar -->
+                  <div class="glass p-4 rounded-xl mb-6 border border-white/5">
+                    <div class="grid grid-cols-3 gap-4 text-center">
+                      <div>
+                        <p class="text-xs font-mono text-neutral-500 mb-1">Role</p>
+                        <p class="text-xs text-white font-mono">${venture.type === 'founder' ? 'Full-Stack & System Design' : 'Full Stack Developer'}</p>
+                      </div>
+                      <div>
+                        <p class="text-xs font-mono text-neutral-500 mb-1">Tech</p>
+                        <p class="text-xs text-white font-mono">${venture.tech[0]} / ${venture.tech[1]}</p>
+                      </div>
+                      <div>
+                        <p class="text-xs font-mono text-neutral-500 mb-1">Focus</p>
+                        <p class="text-xs text-white font-mono">${venture.type === 'founder' ? 'AI Integration' : 'Performance'}</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Problem-Solution-Impact Framework -->
+                  <div class="space-y-3 mb-6">
+                    ${venture.type === 'founder' ? `
+                      <div class="flex items-start gap-3">
+                        <span class="text-cyan-400 font-mono text-xs">Problem:</span>
+                        <p class="text-xs text-neutral-400">Expense tracking is manual, slow, and prone to human error</p>
+                      </div>
+                      <div class="flex items-start gap-3">
+                        <span class="text-green-400 font-mono text-xs">Solution:</span>
+                        <p class="text-xs text-neutral-400">Built AI engine automating categorization using Node.js & ML APIs</p>
+                      </div>
+                      <div class="flex items-start gap-3">
+                        <span class="text-primary font-mono text-xs">Impact:</span>
+                        <p class="text-xs text-neutral-400">Reduced manual entry time by 80% for beta users</p>
+                      </div>
+                    ` : ''}
+                  </div>
+
+                  <!-- Tech Stack -->
+                  <div class="flex flex-wrap gap-2 mb-6">
+                    ${venture.tech.map(tech => `
+                      <span class="px-3 py-1 bg-muted text-xs font-mono rounded-lg border border-white/10">${tech}</span>
+                    `).join('')}
+                  </div>
+
+                  <!-- Achievements -->
+                  <div class="space-y-2">
+                    ${venture.achievements.map(achievement => `
+                      <div class="flex items-center gap-3">
+                        <div class="w-1.5 h-1.5 bg-cyan-400 rounded-full"></div>
+                        <p class="text-sm text-neutral-300">${achievement}</p>
+                      </div>
+                    `).join('')}
+                  </div>
+
+                  <!-- View Architecture Button -->
+                  ${venture.type === 'founder' ? `
+                    <button onclick="showExplyraArchitecture()" class="mt-6 w-full glass hover:bg-cyan-400/10 text-cyan-400 font-mono py-3 px-6 rounded-xl transition-all border border-cyan-400/20 hover:border-cyan-400/40 flex items-center justify-center gap-2">
+                      <i data-lucide="layout"></i>
+                      View Architecture
+                    </button>
+                  ` : ''}
+                </div>
+              </div>
+            `).join('')}
           </div>
         </div>
       </section>
