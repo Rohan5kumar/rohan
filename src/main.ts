@@ -476,6 +476,8 @@ document.addEventListener('DOMContentLoaded', () => {
   // Add global elements
   const body = document.body;
   body.insertAdjacentHTML('afterbegin', `
+    <div class="hero-background"></div>
+    <div class="background-overlay"></div>
     <div id="scroll-progress" class="fixed top-0 left-0 h-1 bg-primary z-[100] transition-all duration-100" style="width: 0%"></div>
     <div id="cursor" class="custom-cursor"></div>
     <div id="cursor-dot" class="custom-cursor-dot"></div>

@@ -3,6 +3,44 @@
 @tailwind components;
 @tailwind utilities;
 
+/* System Architect Background System */
+.hero-background {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  background-image: url('../public/hero-background.jpg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  filter: blur(8px) brightness(0.4);
+  z-index: -2;
+  transform: scale(1.1); /* Prevents edge blur artifacts */
+}
+
+.background-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  background: radial-gradient(circle, rgba(11,14,20,0.7) 0%, rgba(11,14,20,1) 100%);
+  z-index: -1;
+  pointer-events: none;
+}
+
+/* Enhanced fluid background opacity */
+.fluid-background-container {
+  opacity: 0.3;
+  z-index: -1;
+}
+
+/* Wallpaper container with reduced opacity */
+#wallpaper-container {
+  opacity: 0.3 !important;
+}
+
 :root {
   --primary: #10b981; /* Emerald 500 */
   --primary-glow: rgba(16, 185, 129, 0.2);
