@@ -8,7 +8,7 @@ import confetti from 'canvas-confetti';
 import { GoogleGenAI } from "@google/genai";
 import mermaid from 'mermaid';
 import { initModalBridge } from './modalBridge';
-import { BackgroundSystem } from './BackgroundSystem';
+import { initBackground } from './components/Background';
 
 mermaid.initialize({
   startOnLoad: false,
@@ -21,7 +21,6 @@ gsap.registerPlugin(ScrollTrigger);
 
 // --- State ---
 let currentTheme = localStorage.getItem('portfolio-theme') || 'emerald';
-let backgroundSystem: BackgroundSystem | null = null;
 
 const experience = [
   {
@@ -303,15 +302,7 @@ async function router() {
 
     initCustomCursor();
     
-    // Initialize Advanced Background
-    const bgContainer = document.getElementById('wallpaper-container');
-    if (bgContainer && !backgroundSystem) {
-      backgroundSystem = new BackgroundSystem({
-        container: bgContainer,
-        primaryColor: getComputedStyle(document.documentElement).getPropertyValue('--primary').trim() || '#10b981',
-        theme: currentTheme
-      });
-    }
+    // Background is now handled by the new BackgroundManager
 
     initHero3D();
     initScrollProgress();
@@ -473,18 +464,15 @@ function initScrollProgress() {
 
 window.addEventListener('popstate', router);
 document.addEventListener('DOMContentLoaded', () => {
+  // Initialize new Background system
+  initBackground();
+  
   // Add global elements
   const body = document.body;
   body.insertAdjacentHTML('afterbegin', `
-    <div class="hero-background"></div>
-    <div class="background-overlay"></div>
     <div id="scroll-progress" class="fixed top-0 left-0 h-1 bg-primary z-[100] transition-all duration-100" style="width: 0%"></div>
     <div id="cursor" class="custom-cursor"></div>
     <div id="cursor-dot" class="custom-cursor-dot"></div>
-    <video id="bg-video" class="fixed inset-0 w-full h-full object-cover -z-20 opacity-0 transition-opacity duration-1000 pointer-events-none" autoplay muted loop playsinline>
-      <source src="/background-video.mp4" type="video/mp4">
-    </video>
-    <div id="wallpaper-container" class="fixed inset-0 -z-10 pointer-events-none"></div>
   `);
 
   initModalBridge();
@@ -1474,11 +1462,7 @@ async function initHome() {
         bgVideo?.pause();
       }
 
-      // Update Advanced Background Theme
-      if (backgroundSystem) {
-        const newPrimary = getComputedStyle(document.documentElement).getPropertyValue('--primary').trim();
-        backgroundSystem.updateTheme(newPrimary, themeId);
-      }
+      // Background theme is now handled by the new BackgroundManager
       
       // Update icons color if needed
       createIcons({

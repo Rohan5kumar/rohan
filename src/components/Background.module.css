@@ -1,0 +1,121 @@
+.backgroundContainer {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  z-index: -2;
+  overflow: hidden;
+}
+
+.backgroundImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  filter: brightness(0.35) contrast(1.1);
+  transition: all 0.3s ease;
+}
+
+.backgroundImageMobile {
+  object-position: center 30%; /* Centers on subject in mobile */
+}
+
+.backdropBlur {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  background: rgba(0, 0, 0, 0.1);
+}
+
+.fluidCanvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0.6;
+  mix-blend-mode: screen;
+  pointer-events: none;
+}
+
+.mobileOverlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    to bottom,
+    rgba(0, 0, 0, 0.2) 0%,
+    transparent 30%,
+    transparent 70%,
+    rgba(0, 0, 0, 0.4) 100%
+  );
+  pointer-events: none;
+}
+
+/* Performance optimizations */
+@media (prefers-reduced-motion: reduce) {
+  .backgroundImage {
+    transition: none;
+  }
+  
+  .fluidCanvas {
+    opacity: 0.3;
+  }
+}
+
+/* High DPI displays */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+  .backgroundImage {
+    image-rendering: -webkit-optimize-contrast;
+    image-rendering: crisp-edges;
+  }
+}
+
+/* Mobile-specific optimizations */
+@media (max-width: 768px) {
+  .backgroundContainer {
+    height: 100vh;
+    height: 100dvh; /* Dynamic viewport height for mobile browsers */
+  }
+  
+  .backdropBlur {
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+  }
+  
+  .fluidCanvas {
+    opacity: 0.4;
+  }
+}
+
+/* Ultra-wide displays */
+@media (min-width: 1920px) {
+  .backgroundImage {
+    object-position: center center;
+  }
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+  .backdropBlur {
+    background: rgba(0, 0, 0, 0.2);
+  }
+}
+
+/* Light mode support */
+@media (prefers-color-scheme: light) {
+  .backgroundImage {
+    filter: brightness(0.5) contrast(1.1);
+  }
+  
+  .backdropBlur {
+    background: rgba(255, 255, 255, 0.1);
+  }
+}
