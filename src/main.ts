@@ -320,22 +320,44 @@ async function router() {
 
 function initAnimations() {
   // Hero Entrance Sequence
-  const heroTl = gsap.timeline({ defaults: { ease: 'power4.out', duration: 1.2 } });
+  const heroTl = gsap.timeline({ defaults: { ease: 'expo.out', duration: 2 } });
   
   // Set initial states
-  gsap.set(['#hero-text h1', '#hero-text span', '#hero-text p', '#hero-text button', '#hero-text .flex.gap-4', '#hero-image'], {
+  gsap.set(['#hero-text h1', '#hero-text div', '#hero-text p', '#hero-text button', '#hero-image'], {
     opacity: 0,
-    y: 30,
-    filter: 'blur(10px)'
+    y: 50,
+    filter: 'blur(20px)',
+    scale: 0.95
   });
   
   heroTl
-    .to('#hero-text span', { opacity: 1, y: 0, filter: 'blur(0px)', duration: 0.8 }, 0.2)
-    .to('#hero-text h1', { opacity: 1, y: 0, filter: 'blur(0px)', stagger: 0.1 }, '-=0.6')
-    .to('#hero-text p', { opacity: 1, y: 0, filter: 'blur(0px)' }, '-=0.8')
-    .to('#hero-text button', { opacity: 1, y: 0, filter: 'blur(0px)', stagger: 0.1 }, '-=0.8')
-    .to('#hero-text .flex.gap-4', { opacity: 1, y: 0, filter: 'blur(0px)' }, '-=1')
-    .to('#hero-image', { opacity: 1, y: 0, filter: 'blur(0px)', scale: 1, duration: 1.5, ease: 'expo.out' }, '-=1.2');
+    .to('#hero-text div', { opacity: 1, y: 0, filter: 'blur(0px)', scale: 1, duration: 1.2 }, 0.5)
+    .to('#hero-text h1', { 
+      opacity: 1, 
+      y: 0, 
+      filter: 'blur(0px)', 
+      scale: 1,
+      stagger: 0.2,
+      duration: 1.5,
+      ease: 'power4.out'
+    }, '-=0.8')
+    .to('#hero-text p', { opacity: 1, y: 0, filter: 'blur(0px)', scale: 1, duration: 1.2 }, '-=1.2')
+    .to('#hero-text button', { 
+      opacity: 1, 
+      y: 0, 
+      filter: 'blur(0px)', 
+      scale: 1,
+      stagger: 0.1, 
+      duration: 1 
+    }, '-=1')
+    .to('#hero-image', { 
+      opacity: 1, 
+      y: 0, 
+      filter: 'blur(0px)', 
+      scale: 1, 
+      duration: 2,
+      ease: 'expo.out' 
+    }, '-=1.5');
 
   // Hero Parallax Effect
   window.addEventListener('mousemove', (e) => {
@@ -874,65 +896,62 @@ function setupMobileMenu() {
 
 function renderHome() {
   return `
-    <div class="max-w-7xl mx-auto px-6 py-12">
-      <nav class="fixed top-0 left-0 w-full z-50 px-6 py-4 transition-all duration-300" id="main-nav">
-        <div class="max-w-7xl mx-auto flex items-center justify-between">
-          <div class="flex items-center gap-2">
-            <span class="text-2xl font-black tracking-tighter text-white">PORT<span class="text-primary">FOLIO</span></span>
-          </div>
-          
-          <div class="hidden md:flex items-center gap-10">
-            <a href="#hero" class="nav-link text-sm font-bold uppercase tracking-widest text-primary">Home</a>
-            <a href="#services" class="nav-link text-sm font-bold uppercase tracking-widest hover:text-primary transition-colors">Services</a>
-            <a href="#skills" class="nav-link text-sm font-bold uppercase tracking-widest hover:text-primary transition-colors">Skills</a>
-            <a href="#experience" class="nav-link text-sm font-bold uppercase tracking-widest hover:text-primary transition-colors">Experience</a>
-            <a href="#contact" class="nav-link text-sm font-bold uppercase tracking-widest hover:text-primary transition-colors">Contact</a>
-          </div>
-
-          <button id="mobile-menu-toggle" class="md:hidden p-2 text-white">
-            <i data-lucide="menu" class="w-6 h-6"></i>
-          </button>
+    <div class="max-w-7xl mx-auto px-6">
+      <nav class="fixed top-6 left-1/2 -translate-x-1/2 w-[90%] max-w-4xl z-50 px-8 py-3 glass-refined rounded-full flex items-center justify-between" id="main-nav">
+        <div class="flex items-center gap-3">
+          <div class="w-8 h-8 bg-primary rounded-lg flex items-center justify-center font-black text-black text-lg">R</div>
+          <span class="text-xl font-bold tracking-tight text-white">Rohan K.</span>
         </div>
+        
+        <div class="hidden md:flex items-center gap-8">
+          <a href="#hero" class="text-xs font-bold uppercase tracking-widest text-primary hover:bloom-amber transition-all underline-offset-8">Experience</a>
+          <a href="#services" class="text-xs font-bold uppercase tracking-widest text-neutral-400 hover:text-white transition-all">Testimonials</a>
+          <a href="#skills" class="text-xs font-bold uppercase tracking-widest text-neutral-400 hover:text-white transition-all">Certificates</a>
+          <a href="#contact" class="text-xs font-bold uppercase tracking-widest text-neutral-400 hover:text-white transition-all">Contact</a>
+        </div>
+
+        <button id="mobile-menu-toggle" class="md:hidden p-2 text-white">
+          <i data-lucide="menu" class="w-5 h-5"></i>
+        </button>
       </nav>
 
-      <section id="hero" class="min-h-screen flex items-center pt-20">
-        <div class="container mx-auto flex flex-col lg:flex-row items-center justify-between gap-16">
-          <div class="flex-1 text-center lg:text-left" id="hero-text">
-            <h3 class="text-2xl md:text-3xl font-bold mb-2">Hi, It's <span class="text-primary">Rohan</span></h3>
-            <h1 class="text-4xl md:text-6xl lg:text-7xl font-black mb-4 hero-title-name">
-              I'm a <span id="typing-role" class="typing-text"></span>
-            </h1>
-            <p class="text-muted-foreground text-lg mb-8 max-w-xl mx-auto lg:mx-0 text-text-muted leading-relaxed">
-              System Architect and Full-Stack Developer. Co-founder of Explyra. 
-              Engineering scalable, secure digital ecosystems with architectural precision and high-performance infrastructure.
-            </p>
-            
-            <div class="flex gap-4 justify-center lg:justify-start mb-10">
-              <a href="https://linkedin.com" class="social-icon w-12 h-12 flex items-center justify-center rounded-full border border-primary text-primary hover:bg-primary hover:text-black transition-all duration-300">
-                <i data-lucide="linkedin" class="w-5 h-5"></i>
-              </a>
-              <a href="https://github.com/rohankumarkv" class="social-icon w-12 h-12 flex items-center justify-center rounded-full border border-primary text-primary hover:bg-primary hover:text-black transition-all duration-300">
-                <i data-lucide="github" class="w-5 h-5"></i>
-              </a>
-              <a href="mailto:rkg22122008@gmail.com" class="social-icon w-12 h-12 flex items-center justify-center rounded-full border border-primary text-primary hover:bg-primary hover:text-black transition-all duration-300">
-                <i data-lucide="mail" class="w-5 h-5"></i>
-              </a>
-            </div>
-
-            <div class="flex flex-wrap gap-4 justify-center lg:justify-start">
-              <button id="download-cv" class="bg-primary hover:shadow-[0_0_20px_var(--primary)] text-black font-extrabold py-3 px-10 rounded-full transition-all duration-300 transform hover:scale-105 border-2 border-primary">
-                Hire Me
-              </button>
-              <button id="see-cv" class="border-2 border-primary text-primary hover:bg-primary hover:text-black font-extrabold py-3 px-10 rounded-full transition-all duration-300 transform hover:scale-105 shadow-[0_0_10px_rgba(255,0,79,0.2)]">
-                Experience
-              </button>
-            </div>
+      <section id="hero" class="min-h-screen flex flex-col items-center justify-center pt-32 pb-20 text-center">
+        <div class="max-w-4xl mx-auto" id="hero-text">
+          <div class="inline-flex items-center gap-2 px-4 py-2 glass-refined rounded-full text-primary text-[10px] font-mono uppercase tracking-[0.3em] mb-8 animate-pulse">
+            FULL-STACK DEVELOPER & ASPIRING SYSTEM ARCHITECT
           </div>
+          
+          <h1 class="text-7xl md:text-9xl font-black mb-2 sci-fi-header tracking-tighter text-white leading-[0.8]">
+            Rohan
+          </h1>
+          <h1 class="text-7xl md:text-9xl font-black mb-10 sci-fi-header tracking-tighter text-neutral-500 leading-[0.8]">
+            Krishnagoudar
+          </h1>
+          
+          <p class="text-neutral-400 text-lg md:text-xl mb-12 max-w-2xl mx-auto leading-relaxed">
+            I build bridges between complex backend infrastructures and seamless user experiences. 
+            Designing scalable, secure, and high-performance web applications.
+          </p>
+          
+          <div class="flex flex-wrap gap-6 justify-center">
+            <button id="download-cv" class="group relative px-8 py-4 bg-primary text-black font-black uppercase tracking-widest rounded-xl overflow-hidden hover:scale-105 transition-all">
+              <span class="relative z-10">Deploy Vision</span>
+              <div class="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300"></div>
+            </button>
+            <button id="see-cv" class="px-8 py-4 glass-refined text-white font-black uppercase tracking-widest rounded-xl hover:bg-white/5 transition-all">
+              Architecture
+            </button>
+          </div>
+        </div>
 
-          <div class="flex-1 flex justify-center lg:justify-end" id="hero-image-container">
-            <div class="relative w-64 h-64 md:w-80 md:h-80 lg:w-[450px] lg:h-[450px] hero-image-glow">
-              <img src="/image.jpeg" alt="Rohan Krishnagoudar" class="w-full h-full object-cover filter brightness-110" onerror="this.src='https://picsum.photos/seed/rohan/800/800'">
-              <div class="absolute inset-0 bg-gradient-to-t from-bg/40 to-transparent"></div>
+        <div class="mt-20 w-full max-w-5xl mx-auto px-6" id="hero-image">
+          <div class="relative aspect-video rounded-3xl overflow-hidden border border-white/10 glass-refined shadow-2xl">
+            <img src="/hero-landscape.jpg" class="w-full h-full object-cover">
+            <div class="absolute inset-0 bg-gradient-to-t from-bg-deep to-transparent opacity-60"></div>
+            <div class="absolute inset-0 flex items-center justify-center">
+              <div class="w-20 h-20 rounded-full bg-primary/20 backdrop-blur-md flex items-center justify-center border border-primary/30 group cursor-pointer hover:scale-110 transition-all">
+                <i data-lucide="play" class="text-primary w-8 h-8 fill-primary"></i>
+              </div>
             </div>
           </div>
         </div>

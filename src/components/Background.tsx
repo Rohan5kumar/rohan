@@ -12,6 +12,12 @@ export class BackgroundManager {
   private targetMouseY: number = 0.5;
   private startTime: number = Date.now();
 
+  // Three.js for particles
+  private scene: THREE.Scene | null = null;
+  private camera: THREE.PerspectiveCamera | null = null;
+  private renderer: THREE.WebGLRenderer | null = null;
+  private particles: THREE.Points | null = null;
+
   constructor(containerId: string = 'background-container') {
     this.container = document.getElementById(containerId) || document.body;
     this.init();
@@ -21,9 +27,11 @@ export class BackgroundManager {
   private init() {
     // Create background structure without static image
     this.container.innerHTML = `
-      <div class="background-wrapper" style="background: #020205;">
-        <canvas id="nebula-canvas" class="fluid-canvas" style="opacity: 0.8;"></canvas>
-        <div class="backdrop-blur" style="background: radial-gradient(circle at center, transparent 0%, rgba(0,0,0,0.4) 100%);"></div>
+      <div class="background-wrapper" style="background: #0B0B0B;">
+        <img src="/hero-landscape.jpg" class="background-image" style="opacity: 0.4; filter: brightness(0.6) contrast(1.2) saturate(1.2);">
+        <canvas id="nebula-canvas" class="fluid-canvas" style="opacity: 0.7; mix-blend-mode: screen;"></canvas>
+        <div id="particle-container" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 1;"></div>
+        <div class="backdrop-blur"></div>
       </div>
     `;
 
@@ -35,6 +43,7 @@ export class BackgroundManager {
 
     this.setupCanvas();
     this.createShaders();
+    this.initParticles();
     this.animate();
   }
 
@@ -113,21 +122,21 @@ export class BackgroundManager {
 
         float f = fbm(uv + r + mouse * 0.1);
 
-        // Dynamic color scheme based on primary emerald/cyan tones
-        vec3 color = mix(vec3(0.01, 0.02, 0.05), // Deep space
-                         vec3(0.0, 0.4, 0.3),   // Emerald/Teal
-                         clamp((f * f) * 4.0, 0.0, 1.0));
+        // Dynamic color scheme based on Amber (Lava) and Cyan (Holographic)
+        vec3 color = mix(vec3(0.01, 0.01, 0.02), // Deep black-blue
+                         vec3(0.8, 0.4, 0.1),   // Amber/Orange (Lava)
+                         clamp((f * f) * 5.0, 0.0, 1.0));
 
         color = mix(color,
-                    vec3(0.0, 0.1, 0.2),       // Deep Blue
+                    vec3(0.02, 0.05, 0.1),      // Deep Space Blue
                     clamp(length(q), 0.0, 1.0));
 
         color = mix(color,
-                    vec3(0.2, 0.8, 0.6),       // Bright Cyan/Emerald
+                    vec3(0.1, 0.6, 0.8),       // Holographic Cyan
                     clamp(length(r.x), 0.0, 1.0));
 
         // Final brightness adjustment
-        float intensity = f * f * f * 1.1 + 0.2 * f * f + 0.5 * f;
+        float intensity = f * f * f * 1.2 + 0.3 * f * f + 0.6 * f;
         color *= intensity;
 
         // Subtle vignette
@@ -174,11 +183,38 @@ export class BackgroundManager {
     this.gl.vertexAttribPointer(pos, 2, this.gl.FLOAT, false, 0, 0);
   }
 
-  private setupEventListeners() {
-    window.addEventListener('mousemove', (e) => {
-      this.targetMouseX = e.clientX / window.innerWidth;
-      this.targetMouseY = 1.0 - (e.clientY / window.innerHeight);
+  private initParticles() {
+    const particleContainer = document.getElementById('particle-container');
+    if (!particleContainer) return;
+
+    this.scene = new THREE.Scene();
+    this.camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+    this.renderer = new THREE.WebGLRenderer({ alpha: true });
+    this.renderer.setSize(window.innerWidth, window.innerHeight);
+    this.renderer.setPixelRatio(window.devicePixelRatio);
+    particleContainer.appendChild(this.renderer.domElement);
+
+    const particlesGeometry = new THREE.BufferGeometry();
+    const particlesCount = 2000;
+    const posArray = new Float32Array(particlesCount * 3);
+
+    for (let i = 0; i < particlesCount * 3; i++) {
+      posArray[i] = (Math.random() - 0.5) * 10;
+    }
+
+    particlesGeometry.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
+
+    const particlesMaterial = new THREE.PointsMaterial({
+      size: 0.005,
+      color: 0xF59E0B, // Amber particles
+      transparent: true,
+      opacity: 0.6,
+      blending: THREE.AdditiveBlending
     });
+
+    this.particles = new THREE.Points(particlesGeometry, particlesMaterial);
+    this.scene.add(this.particles);
+    this.camera.position.z = 2;
   }
 
   private animate() {
@@ -191,12 +227,20 @@ export class BackgroundManager {
 
       const time = (Date.now() - this.startTime) / 1000;
 
+      // Update WebGL Shader Background
       this.gl.useProgram(this.program);
       this.gl.uniform1f(this.gl.getUniformLocation(this.program, 'u_time'), time);
       this.gl.uniform2f(this.gl.getUniformLocation(this.program, 'u_mouse'), this.mouseX, this.mouseY);
       this.gl.uniform2f(this.gl.getUniformLocation(this.program, 'u_resolution'), this.canvas.width, this.canvas.height);
-
       this.gl.drawArrays(this.gl.TRIANGLE_STRIP, 0, 4);
+
+      // Update Three.js Particles
+      if (this.particles && this.renderer && this.scene && this.camera) {
+        this.particles.rotation.y = time * 0.05;
+        this.particles.rotation.x = this.mouseY * 0.1;
+        this.renderer.render(this.scene, this.camera);
+      }
+
       this.animationId = requestAnimationFrame(render);
     };
     render();
@@ -204,6 +248,7 @@ export class BackgroundManager {
 
   public destroy() {
     if (this.animationId) cancelAnimationFrame(this.animationId);
+    if (this.renderer) this.renderer.dispose();
   }
 }
 
