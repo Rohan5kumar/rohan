@@ -20,7 +20,7 @@ mermaid.initialize({
 gsap.registerPlugin(ScrollTrigger);
 
 // --- State ---
-let currentTheme = localStorage.getItem('portfolio-theme') || 'emerald';
+let currentTheme = localStorage.getItem('portfolio-theme') || 'primary';
 
 const ventures = [
   {
@@ -90,12 +90,12 @@ const testimonials = [
 
 const themes = [
   { id: 'light', name: 'Light', color: '#ffffff' },
-  { id: 'emerald', name: 'Emerald', color: '#10b981' },
+  { id: 'primary', name: 'Emerald', color: '#10b981' },
   { id: 'ruby', name: 'Ruby', color: '#ef4444' },
   { id: 'sapphire', name: 'Sapphire', color: '#3b82f6' },
   { id: 'gold', name: 'Gold', color: '#f59e0b' },
   { id: 'purple', name: 'Purple', color: '#a855f7' },
-  { id: 'cyan', name: 'Cyan', color: '#06b6d4' },
+  { id: 'primary', name: 'Cyan', color: '#06b6d4' },
   { id: 'rose', name: 'Rose', color: '#f43f5e' },
   { id: 'amber', name: 'Amber', color: '#fbbf24' },
   { id: 'indigo', name: 'Indigo', color: '#6366f1' },
@@ -113,18 +113,7 @@ const blogPosts = [
   { id: 3, title: 'Next-Gen Portfolio Design', date: 'Feb 28, 2026', excerpt: 'Why minimalism and micro-interactions are the future.', category: 'Design' },
 ];
 
-const certificates = [
-  { id: 1, title: 'Professional Portfolio Certification', issuer: 'Rohan Krishnagoudar', date: '2026', link: '/rohan.pdf' },
-  { id: 2, title: 'IBM Full Stack Software Developer Professional Certificate', issuer: 'IBM', date: '2024', link: '#' },
-  { id: 3, title: 'Google IT Automation with Python Professional Certificate', issuer: 'Google', date: '2023', link: '#' },
-  { id: 4, title: 'IBM Data Science Professional Certificate', issuer: 'IBM', date: '2023', link: '#' },
-  { id: 5, title: 'Google Cybersecurity Professional Certificate', issuer: 'Google', date: '2024', link: '#' },
-  { id: 6, title: 'IBM AI Engineering Professional Certificate', issuer: 'IBM', date: '2024', link: '#' },
-  { id: 7, title: 'Google Cloud Digital Leader Training', issuer: 'Google', date: '2023', link: '#' },
-  { id: 8, title: 'IBM Applied AI Professional Certificate', issuer: 'IBM', date: '2023', link: '#' },
-  { id: 9, title: 'Google UX Design Professional Certificate', issuer: 'Google', date: '2024', link: '#' },
-  { id: 10, title: 'IBM Cloud Application Development Foundations', issuer: 'IBM', date: '2023', link: '#' },
-];
+
 
 const techStack = [
   { 
@@ -300,16 +289,10 @@ async function router() {
   if (!app) return;
 
   // Page Transition
-  gsap.to(app, { opacity: 0, y: -20, duration: 0.3, onComplete: () => {
+  gsap.to(app, { opacity: 0, y: -10, duration: 0.2, onComplete: () => {
     // Apply theme
     document.body.setAttribute('data-theme', currentTheme);
     
-    const bgVideo = document.getElementById('bg-video') as HTMLVideoElement;
-    if (currentTheme === 'light') {
-      bgVideo?.play().catch(() => {});
-    } else {
-      bgVideo?.pause();
-    }
 
     if (routes[path]) {
       app.innerHTML = routes[path]();
@@ -318,7 +301,7 @@ async function router() {
       app.innerHTML = '<div class="p-20 text-center">404 - Page Not Found</div>';
     }
 
-    gsap.to(app, { opacity: 1, y: 0, duration: 0.5 });
+    gsap.to(app, { opacity: 1, y: 0, duration: 0.5, ease: 'power2.out' });
     
     createIcons({
       icons: { Github, Linkedin, Mail, ArrowRight, Download, Code2, Terminal, ExternalLink, ArrowLeft, Send, Bot, User, Loader2, CheckCircle2, ChevronLeft, ChevronRight, Sparkles, X, Menu, Cpu, BookOpen, Activity, Play, Star, MessageSquare, Zap, ShieldCheck, Layout, Database, Server, Gamepad2 }
@@ -326,82 +309,33 @@ async function router() {
 
     initCustomCursor();
     
-    // Background is now handled by the new BackgroundManager
-
-    initHero3D();
     initScrollProgress();
     initAnimations();
   }});
 }
 
-function initHero3D() {
-  const container = document.getElementById('hero-3d-container');
-  if (!container) return;
-
-  const scene = new THREE.Scene();
-  const camera = new THREE.PerspectiveCamera(75, container.clientWidth / container.clientHeight, 0.1, 1000);
-  const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
-  renderer.setSize(container.clientWidth, container.clientHeight);
-  container.appendChild(renderer.domElement);
-
-  const geometry = new THREE.TorusKnotGeometry(10, 3, 100, 16);
-  const primaryColor = getComputedStyle(document.documentElement).getPropertyValue('--primary').trim() || '#10b981';
-  const material = new THREE.MeshPhongMaterial({ 
-    color: primaryColor,
-    emissive: primaryColor,
-    emissiveIntensity: 0.5,
-    wireframe: true 
-  });
-  const torusKnot = new THREE.Mesh(geometry, material);
-  scene.add(torusKnot);
-
-  const light = new THREE.PointLight(0xffffff, 1, 100);
-  light.position.set(0, 0, 20);
-  scene.add(light);
-
-  camera.position.z = 30;
-
-  let mouseX = 0;
-  let mouseY = 0;
-
-  window.addEventListener('mousemove', (e) => {
-    mouseX = (e.clientX - window.innerWidth / 2) / 100;
-    mouseY = (e.clientY - window.innerHeight / 2) / 100;
-  });
-
-  function animate() {
-    requestAnimationFrame(animate);
-    if (!navigator.onLine || currentTheme === 'light') return; // Pause graphics when offline or in light mode
-    
-    // Subtle mouse parallax
-    torusKnot.rotation.x += 0.01 + (mouseY * 0.01);
-    torusKnot.rotation.y += 0.01 + (mouseX * 0.01);
-    
-    renderer.render(scene, camera);
-  }
-
-  animate();
-}
 
 // --- Background Animation (Three.js) ---
 
 
 function initAnimations() {
-  // Hero Animation
-  const heroTl = gsap.timeline();
+  // Hero Entrance Sequence
+  const heroTl = gsap.timeline({ defaults: { ease: 'power4.out', duration: 1.2 } });
   
-  heroTl.to('#hero-text', {
-    opacity: 1,
-    y: 0,
-    duration: 1,
-    ease: 'power4.out'
-  })
-  .to('#hero-image', {
-    opacity: 1,
-    scale: 1,
-    duration: 1,
-    ease: 'back.out(1.7)'
-  }, '-=0.6');
+  // Set initial states
+  gsap.set(['#hero-text h1', '#hero-text span', '#hero-text p', '#hero-text button', '#hero-text .flex.gap-4', '#hero-image'], {
+    opacity: 0,
+    y: 30,
+    filter: 'blur(10px)'
+  });
+  
+  heroTl
+    .to('#hero-text span', { opacity: 1, y: 0, filter: 'blur(0px)', duration: 0.8 }, 0.2)
+    .to('#hero-text h1', { opacity: 1, y: 0, filter: 'blur(0px)', stagger: 0.1 }, '-=0.6')
+    .to('#hero-text p', { opacity: 1, y: 0, filter: 'blur(0px)' }, '-=0.8')
+    .to('#hero-text button', { opacity: 1, y: 0, filter: 'blur(0px)', stagger: 0.1 }, '-=0.8')
+    .to('#hero-text .flex.gap-4', { opacity: 1, y: 0, filter: 'blur(0px)' }, '-=1')
+    .to('#hero-image', { opacity: 1, y: 0, filter: 'blur(0px)', scale: 1, duration: 1.5, ease: 'expo.out' }, '-=1.2');
 
   // Hero Parallax Effect
   window.addEventListener('mousemove', (e) => {
@@ -409,69 +343,119 @@ function initAnimations() {
     const y = (window.innerHeight - e.pageY * 2) / 100;
 
     gsap.to('#hero-image', {
-      x: x,
-      y: y,
-      duration: 1,
+      x: x * 1.5,
+      y: y * 1.5,
+      duration: 1.5,
       ease: 'power2.out'
     });
 
     gsap.to('#hero-text', {
       x: -x * 0.5,
       y: -y * 0.5,
-      duration: 1,
+      duration: 1.5,
       ease: 'power2.out'
     });
   });
 
   gsap.utils.toArray('section').forEach((section: any) => {
-    if (section.id === 'hero') return; // Skip hero as it has its own animation
+    if (section.id === 'hero') return;
     gsap.from(section, {
       opacity: 0,
-      y: 50,
-      duration: 1,
+      y: 60,
+      filter: 'blur(10px)',
+      duration: 1.2,
       scrollTrigger: {
         trigger: section,
-        start: 'top 80%',
+        start: 'top 85%',
         toggleActions: 'play none none none'
       }
     });
   });
 
   gsap.from('.skill-card', {
-    scale: 0.8,
+    scale: 0.9,
     opacity: 0,
-    stagger: 0.2,
-    duration: 0.8,
+    filter: 'blur(10px)',
+    stagger: 0.15,
+    duration: 1,
     scrollTrigger: {
       trigger: '.skill-card',
-      start: 'top 85%'
+      start: 'top 90%'
     }
   });
 }
 
-// --- Custom Cursor ---
+// --- Custom Cursor with Magnetic Interaction ---
 function initCustomCursor() {
   const cursor = document.getElementById('cursor') as HTMLElement;
   const dot = document.getElementById('cursor-dot') as HTMLElement;
   if (!cursor || !dot) return;
 
+  let mouseX = 0, mouseY = 0;
+  let cursorX = 0, cursorY = 0;
+  let isMagnetic = false;
+  let magneticTarget: Element | null = null;
+  let magneticStrength = 0;
+
   window.addEventListener('mousemove', (e) => {
-    cursor.style.left = e.clientX + 'px';
-    cursor.style.top = e.clientY + 'px';
-    dot.style.left = e.clientX + 'px';
-    dot.style.top = e.clientY + 'px';
+    mouseX = e.clientX;
+    mouseY = e.clientY;
   });
 
-  document.querySelectorAll('a, button').forEach(el => {
-    el.addEventListener('mouseenter', () => {
-      cursor.style.transform = 'translate(-50%, -50%) scale(2)';
+  // Magnetic cursor animation
+  function animateCursor() {
+    if (isMagnetic && magneticTarget) {
+      const rect = magneticTarget.getBoundingClientRect();
+      const centerX = rect.left + rect.width / 2;
+      const centerY = rect.top + rect.height / 2;
+      
+      // Calculate magnetic pull
+      const deltaX = centerX - mouseX;
+      const deltaY = centerY - mouseY;
+      const distance = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
+      const maxDistance = 150;
+      
+      if (distance < maxDistance) {
+        const force = (1 - distance / maxDistance) * magneticStrength;
+        cursorX += (mouseX + deltaX * force - cursorX) * 0.2;
+        cursorY += (mouseY + deltaY * force - cursorY) * 0.2;
+      } else {
+        cursorX += (mouseX - cursorX) * 0.1;
+        cursorY += (mouseY - cursorY) * 0.1;
+      }
+    } else {
+      cursorX += (mouseX - cursorX) * 0.1;
+      cursorY += (mouseY - cursorY) * 0.1;
+    }
+
+    cursor.style.left = cursorX + 'px';
+    cursor.style.top = cursorY + 'px';
+    dot.style.left = mouseX + 'px';
+    dot.style.top = mouseY + 'px';
+    
+    requestAnimationFrame(animateCursor);
+  }
+
+  document.querySelectorAll('a, button, .tech-pill').forEach(el => {
+    el.addEventListener('mouseenter', (e) => {
+      isMagnetic = true;
+      magneticTarget = el;
+      magneticStrength = 0.3; // Adjust magnetic strength
+      cursor.style.transform = 'translate(-50%, -50%) scale(2.5)';
       cursor.style.backgroundColor = 'var(--primary-glow)';
+      cursor.style.mixBlendMode = 'screen';
     });
+    
     el.addEventListener('mouseleave', () => {
+      isMagnetic = false;
+      magneticTarget = null;
       cursor.style.transform = 'translate(-50%, -50%) scale(1)';
       cursor.style.backgroundColor = 'transparent';
+      cursor.style.mixBlendMode = 'normal';
     });
   });
+
+  animateCursor();
 }
 
 // --- Scroll Progress ---
@@ -487,6 +471,8 @@ function initScrollProgress() {
 }
 
 window.addEventListener('popstate', router);
+
+
 document.addEventListener('DOMContentLoaded', () => {
   // Initialize new Background system
   initBackground();
@@ -494,7 +480,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // Add global elements
   const body = document.body;
   body.insertAdjacentHTML('afterbegin', `
-    <div id="scroll-progress" class="fixed top-0 left-0 h-1 bg-primary z-[100] transition-all duration-100" style="width: 0%"></div>
+    <div id="scroll-progress" class="fixed top-0 left-0 h-[2px] bg-primary z-[100] transition-all duration-100 shadow-[0_0_10px_rgba(34,211,238,0.5)]" style="width: 0%"></div>
     <div id="cursor" class="custom-cursor"></div>
     <div id="cursor-dot" class="custom-cursor-dot"></div>
   `);
@@ -533,6 +519,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
+  // Initialize router
   router();
 });
 
@@ -541,7 +528,7 @@ function showExplyraArchitecture() {
   const modal = document.createElement('div');
   modal.className = 'fixed inset-0 bg-black/80 backdrop-blur-sm z-[300] flex items-center justify-center p-6';
   modal.innerHTML = `
-    <div class="glass max-w-4xl w-full max-h-[90vh] overflow-auto rounded-[2.5rem] border-cyan-400/20 p-8 relative">
+    <div class="glass max-w-4xl w-full max-h-[90vh] overflow-auto rounded-[2.5rem] border-primary/20 p-8 relative">
       <button onclick="this.closest('.fixed').remove()" class="absolute top-4 right-4 p-2 glass rounded-full hover:bg-red-500/20 text-red-400 transition-colors">
         <i data-lucide="x"></i>
       </button>
@@ -581,7 +568,7 @@ function showExplyraArchitecture() {
       <!-- System Specifications -->
       <div class="grid md:grid-cols-2 gap-6 mb-6">
         <div class="glass p-6 rounded-xl border border-white/5">
-          <h4 class="text-cyan-400 font-mono text-sm mb-4">Performance Specifications</h4>
+          <h4 class="text-primary font-mono text-sm mb-4">Performance Specifications</h4>
           <div class="space-y-3">
             <div class="flex justify-between">
               <span class="text-neutral-400 text-sm">Transaction Throughput</span>
@@ -603,7 +590,7 @@ function showExplyraArchitecture() {
         </div>
         
         <div class="glass p-6 rounded-xl border border-white/5">
-          <h4 class="text-cyan-400 font-mono text-sm mb-4">Security & Compliance</h4>
+          <h4 class="text-primary font-mono text-sm mb-4">Security & Compliance</h4>
           <div class="space-y-3">
             <div class="flex justify-between">
               <span class="text-neutral-400 text-sm">Data Encryption</span>
@@ -627,7 +614,7 @@ function showExplyraArchitecture() {
       
       <!-- Tech Stack Details -->
       <div class="glass p-6 rounded-xl border border-white/5">
-        <h4 class="text-cyan-400 font-mono text-sm mb-4">Technology Stack</h4>
+        <h4 class="text-primary font-mono text-sm mb-4">Technology Stack</h4>
         <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
           <div>
             <p class="text-xs font-mono text-neutral-500 mb-2">Frontend</p>
@@ -683,7 +670,7 @@ function showTechStackDashboard() {
   const modal = document.createElement('div');
   modal.className = 'fixed inset-0 bg-black/80 backdrop-blur-sm z-[300] flex items-center justify-center p-6';
   modal.innerHTML = `
-    <div class="glass max-w-5xl w-full max-h-[90vh] overflow-auto rounded-[2.5rem] border-cyan-400/20 p-8 relative">
+    <div class="glass max-w-5xl w-full max-h-[90vh] overflow-auto rounded-[2.5rem] border-primary/20 p-8 relative">
       <button onclick="this.closest('.fixed').remove()" class="absolute top-4 right-4 p-2 glass rounded-full hover:bg-red-500/20 text-red-400 transition-colors">
         <i data-lucide="x"></i>
       </button>
@@ -797,67 +784,40 @@ function showTechStackDashboard() {
         </div>
         
         <!-- Founder Tools -->
-        <div class="glass p-6 rounded-xl border border-cyan-400/20">
+        <div class="glass p-6 rounded-xl border border-primary/20">
           <div class="flex items-center gap-2 mb-4">
-            <div class="w-2 h-2 bg-cyan-400 rounded-full"></div>
-            <h4 class="text-cyan-400 font-mono text-sm">Founder Tools</h4>
+            <div class="w-2 h-2 bg-primary rounded-full"></div>
+            <h4 class="text-primary font-mono text-sm">Founder Tools</h4>
           </div>
           <div class="space-y-2">
             <div class="flex justify-between items-center">
               <span class="text-xs text-white">Git/GitHub</span>
-              <div class="w-16 h-1 bg-cyan-400/20 rounded">
-                <div class="w-16 h-1 bg-cyan-400 rounded"></div>
+              <div class="w-16 h-1 bg-primary/20 rounded">
+                <div class="w-16 h-1 bg-primary rounded"></div>
               </div>
             </div>
             <div class="flex justify-between items-center">
               <span class="text-xs text-white">Agile Methodology</span>
-              <div class="w-16 h-1 bg-cyan-400/20 rounded">
-                <div class="w-14 h-1 bg-cyan-400 rounded"></div>
+              <div class="w-16 h-1 bg-primary/20 rounded">
+                <div class="w-14 h-1 bg-primary rounded"></div>
               </div>
             </div>
             <div class="flex justify-between items-center">
               <span class="text-xs text-white">Product Roadmapping</span>
-              <div class="w-16 h-1 bg-cyan-400/20 rounded">
-                <div class="w-13 h-1 bg-cyan-400 rounded"></div>
+              <div class="w-16 h-1 bg-primary/20 rounded">
+                <div class="w-13 h-1 bg-primary rounded"></div>
               </div>
             </div>
             <div class="flex justify-between items-center">
               <span class="text-xs text-white">Analytics</span>
-              <div class="w-16 h-1 bg-cyan-400/20 rounded">
-                <div class="w-12 h-1 bg-cyan-400 rounded"></div>
+              <div class="w-16 h-1 bg-primary/20 rounded">
+                <div class="w-12 h-1 bg-primary rounded"></div>
               </div>
             </div>
           </div>
         </div>
       </div>
       
-      <!-- Certifications Section -->
-      <div class="mt-8 glass p-6 rounded-xl border border-white/5">
-        <h4 class="text-cyan-400 font-mono text-sm mb-4">Verified Credentials</h4>
-        <div class="grid md:grid-cols-2 gap-4">
-          <div class="flex items-center gap-4 p-4 bg-green-500/10 rounded-xl border border-green-400/20">
-            <div class="w-12 h-12 bg-green-500/20 rounded-lg flex items-center justify-center">
-              <i data-lucide="award" class="text-green-400"></i>
-            </div>
-            <div>
-              <p class="text-white font-mono text-sm">MitanshuEDU Certification</p>
-              <p class="text-neutral-400 text-xs">Advanced Web Development & System Architecture</p>
-              <a href="https://github.com/Rohan5kumar/certificate-projects" target="_blank" class="text-green-400 text-xs font-mono hover:underline">View Applied Projects →</a>
-            </div>
-          </div>
-          
-          <div class="flex items-center gap-4 p-4 bg-blue-500/10 rounded-xl border border-blue-400/20">
-            <div class="w-12 h-12 bg-blue-500/20 rounded-lg flex items-center justify-center">
-              <i data-lucide="shield-check" class="text-blue-400"></i>
-            </div>
-            <div>
-              <p class="text-white font-mono text-sm">System Architecture Expertise</p>
-              <p class="text-neutral-400 text-xs">Scalable Infrastructure & Distributed Systems</p>
-              <a href="#founder" class="text-blue-400 text-xs font-mono hover:underline">View Explyra Architecture →</a>
-            </div>
-          </div>
-        </div>
-      </div>
     </div>
   `;
   
@@ -914,219 +874,294 @@ function setupMobileMenu() {
 
 function renderHome() {
   return `
-    <div class="max-w-6xl mx-auto px-6 py-12">
-      <nav class="fixed top-4 left-1/2 -translate-x-1/2 z-50 w-[90%] max-w-3xl">
-        <div class="glass px-4 sm:px-6 py-2.5 rounded-full flex items-center justify-between shadow-2xl">
+    <div class="max-w-7xl mx-auto px-6 py-12">
+      <nav class="fixed top-0 left-0 w-full z-50 px-6 py-4 transition-all duration-300" id="main-nav">
+        <div class="max-w-7xl mx-auto flex items-center justify-between">
           <div class="flex items-center gap-2">
-            <div class="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
-              <span class="text-black font-bold">R</span>
-            </div>
-            <span class="font-bold hidden sm:block">Rohan K.</span>
+            <span class="text-2xl font-black tracking-tighter text-white">PORT<span class="text-primary">FOLIO</span></span>
           </div>
           
-          <!-- Desktop Menu -->
-          <div class="hidden md:flex items-center gap-6">
-            <a href="#experience" class="text-sm font-medium hover:text-primary transition-colors">Experience</a>
-            <a href="#testimonials" class="text-sm font-medium hover:text-primary transition-colors">Testimonials</a>
-            <a href="#certs" class="text-sm font-medium hover:text-primary transition-colors">Certificates</a>
-            <a href="#contact" class="text-sm font-medium hover:text-primary transition-colors">Contact</a>
+          <div class="hidden md:flex items-center gap-10">
+            <a href="#hero" class="nav-link text-sm font-bold uppercase tracking-widest text-primary">Home</a>
+            <a href="#services" class="nav-link text-sm font-bold uppercase tracking-widest hover:text-primary transition-colors">Services</a>
+            <a href="#skills" class="nav-link text-sm font-bold uppercase tracking-widest hover:text-primary transition-colors">Skills</a>
+            <a href="#experience" class="nav-link text-sm font-bold uppercase tracking-widest hover:text-primary transition-colors">Experience</a>
+            <a href="#contact" class="nav-link text-sm font-bold uppercase tracking-widest hover:text-primary transition-colors">Contact</a>
           </div>
 
-          <div class="flex items-center gap-2 sm:gap-4">
-            <div class="hidden sm:block h-6 w-px bg-muted mx-2"></div>
-            <div class="flex items-center gap-1 sm:gap-2">
-              <div class="relative group">
-                <button id="theme-toggle" class="p-2 hover:bg-muted rounded-full transition-colors">
-                  <div class="w-5 h-5 rounded-full bg-primary shadow-primary"></div>
-                </button>
-                <div class="absolute right-0 top-full mt-4 p-4 glass rounded-2xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 grid grid-cols-5 gap-2 w-48 shadow-2xl">
-                  ${themes.map(t => `
-                    <button class="theme-btn w-6 h-6 rounded-full border border-white/20 hover:scale-125 transition-transform" 
-                            data-theme-id="${t.id}" 
-                            style="background-color: ${t.color}" 
-                            title="${t.name}"></button>
-                  `).join('')}
-                </div>
-              </div>
-              <!-- Mobile Menu Toggle -->
-              <button id="mobile-menu-toggle" class="md:hidden p-2 hover:bg-muted rounded-full transition-colors">
-                <i data-lucide="menu" class="w-5 h-5"></i>
-              </button>
-            </div>
-          </div>
-        </div>
-
-        <!-- Mobile Menu Overlay -->
-        <div id="mobile-menu" class="absolute top-full left-0 right-0 mt-4 p-6 glass rounded-3xl opacity-0 invisible translate-y-4 transition-all duration-300 md:hidden shadow-2xl">
-          <div class="flex flex-col gap-4">
-            <a href="#experience" class="mobile-nav-link text-lg font-medium py-2 border-b border-white/5">Experience</a>
-            <a href="#testimonials" class="mobile-nav-link text-lg font-medium py-2 border-b border-white/5">Testimonials</a>
-            <a href="#certs" class="mobile-nav-link text-lg font-medium py-2 border-b border-white/5">Certificates</a>
-            <a href="#contact" class="mobile-nav-link text-lg font-medium py-2 border-b border-white/5">Contact</a>
-          </div>
+          <button id="mobile-menu-toggle" class="md:hidden p-2 text-white">
+            <i data-lucide="menu" class="w-6 h-6"></i>
+          </button>
         </div>
       </nav>
 
-      <section id="hero" class="min-h-screen flex flex-col md:flex-row items-center justify-start md:justify-between gap-12 mb-24 pt-32 md:pt-48">
-        <div class="flex-1 text-center md:text-left opacity-0 translate-y-4 transition-all duration-1000 ease-out" id="hero-text">
-          <span class="text-primary font-mono mb-4 block tracking-widest uppercase text-xs sm:text-sm">
-            Full-Stack Developer & Aspiring System Architect
-          </span>
-          <h1 class="text-5xl sm:text-7xl md:text-8xl lg:text-9xl font-bold mb-6 sm:mb-8 tracking-tighter leading-[0.85]">
-            Rohan <br class="hidden sm:block" />
-            <span class="text-neutral-500">Krishnagoudar</span>
-          </h1>
-          <p class="text-lg sm:text-xl text-neutral-400 max-w-xl leading-relaxed mb-8 sm:mb-12 mx-auto md:mx-0">
-            I build bridges between complex backend infrastructures and seamless user experiences. 
-            Designing scalable, secure, and high-performance web applications.
-          </p>
-          <div class="flex flex-wrap gap-4 sm:gap-6 items-center justify-center md:justify-start">
-            <button id="download-cv" class="w-full sm:w-auto bg-primary hover:opacity-90 text-bg font-bold py-4 px-8 rounded-full transition-all transform hover:scale-105 flex items-center justify-center gap-2 shadow-[0_0_20px_rgba(var(--primary-rgb),0.3)]">
-              Download CV <i data-lucide="download"></i>
-            </button>
-            <button id="see-cv" class="w-full sm:w-auto glass hover:bg-muted text-ink font-bold py-4 px-8 rounded-full transition-all transform hover:scale-105 flex items-center justify-center gap-2 border border-white/20">
-              See CV <i data-lucide="eye"></i>
-            </button>
-            <button id="view-resume" class="w-full sm:w-auto bg-cyan-400 hover:bg-cyan-500 text-bg font-bold py-4 px-8 rounded-full transition-all transform hover:scale-105 flex items-center justify-center gap-2 shadow-[0_0_20px_rgba(34,211,238,0.3)]">
-              Resume <i data-lucide="file-text"></i>
-            </button>
-            <button onclick="showTechStackDashboard()" class="w-full sm:w-auto glass hover:bg-purple-500/20 text-purple-400 font-mono py-4 px-8 rounded-full transition-all transform hover:scale-105 flex items-center justify-center gap-2 border border-purple-400/20 hover:border-purple-400/40">
-              Tech Stack <i data-lucide="layout"></i>
-            </button>
-            <a href="#contact" class="w-full sm:w-auto bg-ink hover:bg-opacity-90 text-bg font-bold py-4 px-8 rounded-full transition-all transform hover:scale-105 flex items-center justify-center gap-2 shadow-lg">
-              Let's Talk <i data-lucide="message-square"></i>
-            </a>
-            <div class="flex gap-4">
-              <a href="https://github.com" class="p-3 glass rounded-full hover:bg-muted transition-colors"><i data-lucide="github"></i></a>
-              <a href="https://linkedin.com" class="p-3 glass rounded-full hover:bg-muted transition-colors"><i data-lucide="linkedin"></i></a>
-              <a href="mailto:rkg22122008@gmail.com" class="p-3 glass rounded-full hover:bg-muted transition-colors"><i data-lucide="mail"></i></a>
+      <section id="hero" class="min-h-screen flex items-center pt-20">
+        <div class="container mx-auto flex flex-col lg:flex-row items-center justify-between gap-16">
+          <div class="flex-1 text-center lg:text-left" id="hero-text">
+            <h3 class="text-2xl md:text-3xl font-bold mb-2">Hi, It's <span class="text-primary">Rohan</span></h3>
+            <h1 class="text-4xl md:text-6xl lg:text-7xl font-black mb-4 hero-title-name">
+              I'm a <span id="typing-role" class="typing-text"></span>
+            </h1>
+            <p class="text-muted-foreground text-lg mb-8 max-w-xl mx-auto lg:mx-0 text-text-muted leading-relaxed">
+              System Architect and Full-Stack Developer. Co-founder of Explyra. 
+              Engineering scalable, secure digital ecosystems with architectural precision and high-performance infrastructure.
+            </p>
+            
+            <div class="flex gap-4 justify-center lg:justify-start mb-10">
+              <a href="https://linkedin.com" class="social-icon w-12 h-12 flex items-center justify-center rounded-full border border-primary text-primary hover:bg-primary hover:text-black transition-all duration-300">
+                <i data-lucide="linkedin" class="w-5 h-5"></i>
+              </a>
+              <a href="https://github.com/rohankumarkv" class="social-icon w-12 h-12 flex items-center justify-center rounded-full border border-primary text-primary hover:bg-primary hover:text-black transition-all duration-300">
+                <i data-lucide="github" class="w-5 h-5"></i>
+              </a>
+              <a href="mailto:rkg22122008@gmail.com" class="social-icon w-12 h-12 flex items-center justify-center rounded-full border border-primary text-primary hover:bg-primary hover:text-black transition-all duration-300">
+                <i data-lucide="mail" class="w-5 h-5"></i>
+              </a>
+            </div>
+
+            <div class="flex flex-wrap gap-4 justify-center lg:justify-start">
+              <button id="download-cv" class="bg-primary hover:shadow-[0_0_20px_var(--primary)] text-black font-extrabold py-3 px-10 rounded-full transition-all duration-300 transform hover:scale-105 border-2 border-primary">
+                Hire Me
+              </button>
+              <button id="see-cv" class="border-2 border-primary text-primary hover:bg-primary hover:text-black font-extrabold py-3 px-10 rounded-full transition-all duration-300 transform hover:scale-105 shadow-[0_0_10px_rgba(255,0,79,0.2)]">
+                Experience
+              </button>
             </div>
           </div>
-        </div>
 
-        <div class="relative flex-1 flex justify-center opacity-0 scale-90 transition-all duration-1000 delay-300 ease-out" id="hero-image">
-          <div class="relative w-64 h-80 md:w-80 md:h-[450px]">
-            <div class="absolute inset-0 border-2 border-primary/30 rounded-[40px] rotate-6 translate-x-4 translate-y-4"></div>
-            <div class="absolute inset-0 border-2 border-white/10 rounded-[40px] -rotate-3 -translate-x-2 -translate-y-2"></div>
-            <div class="relative w-full h-full overflow-hidden rounded-[40px] glass group">
-              <div id="hero-3d-container" class="absolute inset-0 z-0"></div>
-              <img src="/image.jpeg" alt="Rohan Krishnagoudar" class="relative z-10 w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-700 mix-blend-overlay" onerror="this.src='https://picsum.photos/seed/rohan/800/1200'">
-              <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent z-20"></div>
-              <div class="absolute bottom-6 left-6 z-30">
-                <p class="text-primary font-mono text-xs uppercase tracking-widest">Rohan K.</p>
-                <p class="text-white text-sm font-bold">System Architect</p>
-              </div>
+          <div class="flex-1 flex justify-center lg:justify-end" id="hero-image-container">
+            <div class="relative w-64 h-64 md:w-80 md:h-80 lg:w-[450px] lg:h-[450px] hero-image-glow">
+              <img src="/image.jpeg" alt="Rohan Krishnagoudar" class="w-full h-full object-cover filter brightness-110" onerror="this.src='https://picsum.photos/seed/rohan/800/800'">
+              <div class="absolute inset-0 bg-gradient-to-t from-bg/40 to-transparent"></div>
             </div>
           </div>
         </div>
       </section>
 
-      <!-- Founder & Leadership Section -->
-      <section id="founder" class="mb-32">
+      </section>
+
+      <!-- Services Section -->
+      <section id="services" class="mb-32">
+        <div class="container mx-auto px-6">
+          <div class="text-center mb-16">
+            <h2 class="text-4xl md:text-5xl font-black mb-4">My <span class="text-primary">Services</span></h2>
+            <div class="w-20 h-1.5 bg-primary mx-auto rounded-full"></div>
+          </div>
+          
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <div class="glass p-10 rounded-3xl border-primary/20 hover:bg-primary/5 hover:-translate-y-3 transition-all duration-500 group">
+              <div class="mb-6">
+                <i data-lucide="layout" class="text-primary w-12 h-12 group-hover:scale-110 transition-transform"></i>
+              </div>
+              <h3 class="text-2xl font-bold mb-4">Web Design</h3>
+              <p class="text-text-muted leading-relaxed">
+                Creating visually stunning and user-centric designs that elevate your brand and provide seamless experiences.
+              </p>
+              <a href="#contact" class="inline-block mt-6 text-primary font-bold hover:underline">Learn More →</a>
+            </div>
+            
+            <div class="glass p-10 rounded-3xl border-primary/20 hover:bg-primary/5 hover:-translate-y-3 transition-all duration-500 group">
+              <div class="mb-6">
+                <i data-lucide="code-2" class="text-primary w-12 h-12 group-hover:scale-110 transition-transform"></i>
+              </div>
+              <h3 class="text-2xl font-bold mb-4">Web Development</h3>
+              <p class="text-text-muted leading-relaxed">
+                Building robust, scalable applications with clean code and high performance using modern frameworks.
+              </p>
+              <a href="#contact" class="inline-block mt-6 text-primary font-bold hover:underline">Learn More →</a>
+            </div>
+            
+            <div class="glass p-10 rounded-3xl border-primary/20 hover:bg-primary/5 hover:-translate-y-3 transition-all duration-500 group">
+              <div class="mb-6">
+                <i data-lucide="cpu" class="text-primary w-12 h-12 group-hover:scale-110 transition-transform"></i>
+              </div>
+              <h3 class="text-2xl font-bold mb-4">System Architecture</h3>
+              <p class="text-text-muted leading-relaxed">
+                Designing complex digital ecosystems and cloud infrastructure optimized for massive scale.
+              </p>
+              <a href="#contact" class="inline-block mt-6 text-primary font-bold hover:underline">Learn More →</a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Bento Grid - Architectural Narrative -->
+      <section id="bento" class="mb-32">
         <div class="max-w-7xl mx-auto px-6">
           <div class="text-center mb-16">
-            <div class="inline-flex items-center gap-2 px-4 py-2 glass rounded-full text-cyan-400 text-xs font-mono uppercase tracking-widest border-cyan-400/20 mb-6">
+            <div class="inline-flex items-center gap-2 px-4 py-2 glass rounded-full text-primary text-xs font-mono uppercase tracking-widest border-primary/20 mb-6">
               <span class="relative flex h-2 w-2">
-                <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyan-400 opacity-75"></span>
-                <span class="relative inline-flex rounded-full h-2 w-2 bg-cyan-400"></span>
+                <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
+                <span class="relative inline-flex rounded-full h-2 w-2 bg-primary"></span>
               </span>
-              Founder & Leadership
+              Architectural Portfolio
             </div>
             <h2 class="text-4xl sm:text-5xl font-bold tracking-tighter leading-tight mb-6">
-              Building <span class="text-cyan-400">Ventures</span> & <br/>
-              <span class="text-neutral-500">Infrastructure</span>
+              System <span class="text-primary">Blueprints</span> & <br/>
+              <span class="text-neutral-500">Digital Infrastructure</span>
             </h2>
           </div>
 
-          <div class="grid lg:grid-cols-2 gap-8">
-            ${ventures.map(venture => `
-              <div class="glass p-8 rounded-[2.5rem] border-cyan-400/20 relative overflow-hidden group hover:border-cyan-400/40 transition-all duration-700 ${venture.type === 'founder' ? 'ring-2 ring-cyan-400/20' : ''}">
-                ${venture.type === 'founder' ? '<div class="absolute top-4 right-4 px-3 py-1 bg-cyan-400/20 text-cyan-400 text-xs font-mono rounded-full border border-cyan-400/30">Co-founded</div>' : ''}
-                
-                <div class="absolute -top-24 -right-24 w-48 h-48 bg-cyan-400/10 blur-3xl rounded-full group-hover:bg-cyan-400/20 transition-all duration-700"></div>
-                
-                <div class="relative z-10">
-                  <div class="flex items-start justify-between mb-6">
-                    <div>
-                      <h3 class="text-2xl font-bold text-white mb-2">${venture.company}</h3>
-                      <p class="text-cyan-400 font-mono text-sm">${venture.role}</p>
-                      <p class="text-neutral-500 text-xs font-mono mt-1">${venture.period}</p>
-                    </div>
-                    <div class="px-3 py-1 bg-green-500/20 text-green-400 text-xs font-mono rounded-full border border-green-400/30">
-                      ${venture.status}
-                    </div>
+          <!-- Bento Grid Layout -->
+          <div class="grid grid-cols-1 md:grid-cols-3 auto-rows-[300px] gap-6">
+            
+            <!-- The Flagship: Explyra (Large Card) -->
+            <div class="md:col-span-2 md:row-span-2 glass p-8 rounded-[2.5rem] border-primary/30 relative overflow-hidden group hover:border-primary/50 transition-all duration-700 ring-2 ring-primary/20">
+              <div class="absolute top-4 right-4 px-3 py-1 bg-primary/20 text-primary text-xs font-mono rounded-full border border-primary/30">
+                <i data-lucide="star" class="w-3 h-3 inline mr-1"></i>Flagship
+              </div>
+              
+              <div class="absolute -top-24 -right-24 w-48 h-48 bg-primary/10 blur-3xl rounded-full group-hover:bg-primary/20 transition-all duration-700"></div>
+              
+              <div class="relative z-10 h-full flex flex-col">
+                <div class="flex items-start justify-between mb-6">
+                  <div>
+                    <h3 class="text-3xl font-bold text-white mb-2 flex items-center gap-3">
+                      <div class="w-12 h-12 bg-primary/20 rounded-xl flex items-center justify-center">
+                        <i data-lucide="layout" class="text-primary w-6 h-6"></i>
+                      </div>
+                      Explyra
+                    </h3>
+                    <p class="text-primary font-mono text-sm">Co-founder & Lead Architect</p>
+                    <p class="text-neutral-500 text-xs font-mono mt-1">2024 - Present</p>
                   </div>
-
-                  <p class="text-neutral-300 leading-relaxed mb-6">${venture.description}</p>
-
-                  <!-- System Specs Bar -->
-                  <div class="glass p-4 rounded-xl mb-6 border border-white/5">
-                    <div class="grid grid-cols-3 gap-4 text-center">
-                      <div>
-                        <p class="text-xs font-mono text-neutral-500 mb-1">Role</p>
-                        <p class="text-xs text-white font-mono">${venture.type === 'founder' ? 'Full-Stack & System Design' : 'Full Stack Developer'}</p>
-                      </div>
-                      <div>
-                        <p class="text-xs font-mono text-neutral-500 mb-1">Tech</p>
-                        <p class="text-xs text-white font-mono">${venture.tech[0]} / ${venture.tech[1]}</p>
-                      </div>
-                      <div>
-                        <p class="text-xs font-mono text-neutral-500 mb-1">Focus</p>
-                        <p class="text-xs text-white font-mono">${venture.type === 'founder' ? 'AI Integration' : 'Performance'}</p>
-                      </div>
-                    </div>
+                  <div class="px-3 py-1 bg-green-500/20 text-green-400 text-xs font-mono rounded-full border border-green-400/30">
+                    Active Development
                   </div>
+                </div>
 
-                  <!-- Problem-Solution-Impact Framework -->
-                  <div class="space-y-3 mb-6">
-                    ${venture.type === 'founder' ? `
-                      <div class="flex items-start gap-3">
-                        <span class="text-cyan-400 font-mono text-xs">Problem:</span>
-                        <p class="text-xs text-neutral-400">Expense tracking is manual, slow, and prone to human error</p>
-                      </div>
-                      <div class="flex items-start gap-3">
-                        <span class="text-green-400 font-mono text-xs">Solution:</span>
-                        <p class="text-xs text-neutral-400">Built AI engine automating categorization using Node.js & ML APIs</p>
-                      </div>
-                      <div class="flex items-start gap-3">
-                        <span class="text-primary font-mono text-xs">Impact:</span>
-                        <p class="text-xs text-neutral-400">Reduced manual entry time by 80% for beta users</p>
-                      </div>
-                    ` : ''}
-                  </div>
+                <p class="text-neutral-300 leading-relaxed mb-6 text-lg">
+                  Revolutionizing expense management through AI-driven infrastructure. Built a high-performance system capable of processing real-time financial data with zero-latency overhead.
+                </p>
 
-                  <!-- Tech Stack -->
-                  <div class="flex flex-wrap gap-2 mb-6">
-                    ${venture.tech.map(tech => `
-                      <span class="px-3 py-1 bg-muted text-xs font-mono rounded-lg border border-white/10">${tech}</span>
-                    `).join('')}
-                  </div>
-
-                  <!-- Achievements -->
+                <!-- System Specs Table -->
+                <div class="glass p-4 rounded-xl mb-6 border border-white/5">
+                  <h4 class="text-primary font-mono text-xs mb-3">SYSTEM SPECIFICATIONS</h4>
                   <div class="space-y-2">
-                    ${venture.achievements.map(achievement => `
-                      <div class="flex items-center gap-3">
-                        <div class="w-1.5 h-1.5 bg-cyan-400 rounded-full"></div>
-                        <p class="text-sm text-neutral-300">${achievement}</p>
+                    <div class="flex justify-between">
+                      <span class="text-neutral-400 text-xs font-mono">Architecture</span>
+                      <span class="text-white font-mono text-xs">Microservices-ready Monolith</span>
+                    </div>
+                    <div class="flex justify-between">
+                      <span class="text-neutral-400 text-xs font-mono">Authentication</span>
+                      <span class="text-white font-mono text-xs">JWT with OAuth2 Integration</span>
+                    </div>
+                    <div class="flex justify-between">
+                      <span class="text-neutral-400 text-xs font-mono">Data Engine</span>
+                      <span class="text-white font-mono text-xs">MongoDB with Aggregation Pipelines</span>
+                    </div>
+                    <div class="flex justify-between">
+                      <span class="text-neutral-400 text-xs font-mono">Deployment</span>
+                      <span class="text-white font-mono text-xs">CI/CD via GitHub Actions to Cloud</span>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Tech Stack -->
+                <div class="flex flex-wrap gap-2 mb-6">
+                  ${ventures[0].tech.map(tech => `
+                    <span class="px-3 py-1 bg-muted text-xs font-mono rounded-lg border border-white/10">${tech}</span>
+                  `).join('')}
+                </div>
+
+                <!-- Achievements -->
+                <div class="space-y-2 mb-6">
+                  ${ventures[0].achievements.map(achievement => `
+                    <div class="flex items-center gap-3">
+                      <div class="w-1.5 h-1.5 bg-primary rounded-full"></div>
+                      <p class="text-sm text-neutral-300">${achievement}</p>
+                    </div>
+                  `).join('')}
+                </div>
+
+                <button onclick="showExplyraArchitecture()" class="mt-auto w-full glass hover:bg-primary/10 text-primary font-mono py-3 px-6 rounded-xl transition-all border border-primary/20 hover:border-primary/40 flex items-center justify-center gap-2">
+                  <i data-lucide="layout"></i>
+                  View System Blueprint
+                </button>
+              </div>
+            </div>
+
+            <!-- The Communication Engine: Lumina (Medium Card) -->
+            <div class="glass p-6 rounded-[2.5rem] border-purple-400/20 relative overflow-hidden group hover:border-purple-400/40 transition-all duration-700">
+              <div class="absolute top-4 right-4 px-3 py-1 bg-purple-400/20 text-purple-400 text-xs font-mono rounded-full border border-purple-400/30">
+                <i data-lucide="wifi" class="w-3 h-3 inline mr-1"></i>Real-time
+              </div>
+              
+              <div class="absolute -top-24 -right-24 w-48 h-48 bg-purple-400/10 blur-3xl rounded-full group-hover:bg-purple-400/20 transition-all duration-700"></div>
+              
+              <div class="relative z-10 h-full flex flex-col">
+                <div class="flex items-start justify-between mb-4">
+                  <div>
+                    <h3 class="text-xl font-bold text-white mb-2 flex items-center gap-2">
+                      <div class="w-8 h-8 bg-purple-400/20 rounded-lg flex items-center justify-center">
+                        <i data-lucide="activity" class="text-purple-400 w-4 h-4"></i>
                       </div>
+                      Lumina AI
+                    </h3>
+                    <p class="text-purple-400 font-mono text-xs">Full Stack Developer</p>
+                  </div>
+                </div>
+
+                <p class="text-neutral-300 text-sm leading-relaxed mb-4">
+                  Advanced AI-powered analytics platform with intelligent data visualization and predictive modeling capabilities.
+                </p>
+
+                <div class="glass p-3 rounded-xl mb-4 border border-white/5">
+                  <div class="flex items-center gap-2 mb-2">
+                    <i data-lucide="wifi-off" class="text-purple-400 w-3 h-3"></i>
+                    <span class="text-purple-400 font-mono text-xs">Socket.io Integration</span>
+                  </div>
+                  <p class="text-neutral-400 text-xs">Real-time data processing pipeline with WebSocket connectivity</p>
+                </div>
+
+                <div class="mt-auto">
+                  <div class="flex flex-wrap gap-1">
+                    ${ventures[1].tech.slice(0, 3).map(tech => `
+                      <span class="px-2 py-1 bg-muted text-xs font-mono rounded border border-white/10">${tech}</span>
                     `).join('')}
                   </div>
-
-                  <!-- View Architecture Button -->
-                  ${venture.type === 'founder' ? `
-                    <button onclick="showExplyraArchitecture()" class="mt-6 w-full glass hover:bg-cyan-400/10 text-cyan-400 font-mono py-3 px-6 rounded-xl transition-all border border-cyan-400/20 hover:border-cyan-400/40 flex items-center justify-center gap-2">
-                      <i data-lucide="layout"></i>
-                      View Architecture
-                    </button>
-                  ` : ''}
                 </div>
               </div>
-            `).join('')}
+            </div>
+
+
+            <!-- The Tech Stack: Interactive Pill Cloud (Small Card) -->
+            <div class="glass p-6 rounded-[2.5rem] border-amber-400/20 relative overflow-hidden group hover:border-amber-400/40 transition-all duration-700">
+              <div class="absolute top-4 right-4 px-3 py-1 bg-amber-400/20 text-amber-400 text-xs font-mono rounded-full border border-amber-400/30">
+                <i data-lucide="zap" class="w-3 h-3 inline mr-1"></i>Tools
+              </div>
+              
+              <div class="absolute -top-24 -right-24 w-48 h-48 bg-amber-400/10 blur-3xl rounded-full group-hover:bg-amber-400/20 transition-all duration-700"></div>
+              
+              <div class="relative z-10">
+                <h3 class="text-lg font-bold text-white mb-4 flex items-center gap-2">
+                  <div class="w-8 h-8 bg-amber-400/20 rounded-lg flex items-center justify-center">
+                    <i data-lucide="cpu" class="text-amber-400 w-4 h-4"></i>
+                  </div>
+                  Tech Stack
+                </h3>
+
+                <div class="flex flex-wrap gap-2">
+                  ${['React', 'Node.js', 'TypeScript', 'Python', 'AWS', 'Docker'].map(tech => `
+                    <span class="tech-pill px-3 py-1 bg-amber-400/10 text-amber-400 text-xs font-mono rounded-full border border-amber-400/20 hover:bg-amber-400/20 transition-colors cursor-pointer" data-tech="${tech}">
+                      ${tech}
+                    </span>
+                  `).join('')}
+                </div>
+                
+                <button onclick="showTechStackDashboard()" class="mt-4 w-full text-amber-400 font-mono text-xs hover:underline">
+                  View Full Stack →
+                </button>
+              </div>
+            </div>
+
           </div>
         </div>
       </section>
 
-      <section id="about" class="mb-32">
+      </section>
+
+      <section id="about" class="mb-32 pt-20">
         <div class="flex flex-col md:flex-row gap-12 items-center">
           <div class="flex-1 space-y-8">
             <div class="inline-flex items-center gap-2 px-4 py-2 glass rounded-full text-primary text-xs font-mono uppercase tracking-widest border-primary/20">
@@ -1168,10 +1203,10 @@ function renderHome() {
                 </div>
                 <p class="text-xs text-neutral-500">Optimized a real-time chat app by implementing WebSockets, reducing latency by 40%.</p>
               </div>
-              <div class="glass p-6 rounded-3xl border-white/5 hover:border-cyan-400/30 transition-all">
+              <div class="glass p-6 rounded-3xl border-white/5 hover:border-primary/30 transition-all">
                 <div class="flex items-center gap-3 mb-3">
-                  <div class="p-2 bg-cyan-400/10 rounded-lg">
-                    <i data-lucide="shield-check" class="text-cyan-400 w-4 h-4"></i>
+                  <div class="p-2 bg-primary/10 rounded-lg">
+                    <i data-lucide="shield-check" class="text-primary w-4 h-4"></i>
                   </div>
                   <h4 class="font-bold text-sm">Secure Data Persistence</h4>
                 </div>
@@ -1189,8 +1224,8 @@ function renderHome() {
               <p class="text-sm text-neutral-500">Designing scalable, component-based user interfaces.</p>
             </div>
             <div class="glass p-8 rounded-[2.5rem] border-white/5 text-center">
-              <div class="w-24 h-24 bg-cyan-400/10 rounded-3xl flex items-center justify-center mx-auto mb-6">
-                <i data-lucide="database" class="text-cyan-400 w-12 h-12"></i>
+              <div class="w-24 h-24 bg-primary/10 rounded-3xl flex items-center justify-center mx-auto mb-6">
+                <i data-lucide="database" class="text-primary w-12 h-12"></i>
               </div>
               <h3 class="text-xl font-bold mb-2">Backend Infrastructure</h3>
               <p class="text-sm text-neutral-500">Building robust, high-performance server-side systems.</p>
@@ -1199,10 +1234,10 @@ function renderHome() {
         </div>
       </section>
 
-      <section class="mb-32 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 sm:gap-8">
+      <section id="skills" class="mb-32 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 sm:gap-8 pt-20">
         <div class="skill-card">${renderSkillCard('Frontend', ['React', 'TypeScript', 'Tailwind CSS', 'Framer Motion', 'Next.js', 'Redux'], 'layout', 'primary')}</div>
-        <div class="skill-card">${renderSkillCard('Backend', ['Node.js', 'Express', 'PostgreSQL', 'MongoDB', 'GraphQL', 'Firebase'], 'database', 'cyan')}</div>
-        <div class="skill-card">${renderSkillCard('DevOps & Systems', ['Docker', 'Nginx', 'GitHub Actions', 'AWS', 'Vercel', 'Git'], 'server', 'purple')}</div>
+        <div class="skill-card">${renderSkillCard('Backend', ['Node.js', 'Express', 'PostgreSQL', 'MongoDB', 'GraphQL', 'Firebase'], 'database', 'primary')}</div>
+        <div class="skill-card">${renderSkillCard('DevOps & Systems', ['Docker', 'Nginx', 'GitHub Actions', 'AWS', 'Vercel', 'Git'], 'server', 'primary')}</div>
       </section>
 
       <section id="playground" class="mb-32">
@@ -1226,15 +1261,15 @@ function renderHome() {
             </div>
             <p class="text-sm text-neutral-400">A simple demonstration of canvas-confetti integration. Click the button to celebrate!</p>
           </div>
-          <div class="glass p-8 rounded-3xl space-y-6 group hover:border-cyan-400/30 transition-all duration-500">
+          <div class="glass p-8 rounded-3xl space-y-6 group hover:border-primary/30 transition-all duration-500">
             <div class="flex items-center justify-between">
               <div class="flex items-center gap-3">
-                <div class="p-3 bg-cyan-400/10 rounded-xl group-hover:bg-cyan-400/20 transition-colors">
-                  <i data-lucide="activity" class="text-cyan-400 w-5 h-5"></i>
+                <div class="p-3 bg-primary/10 rounded-xl group-hover:bg-primary/20 transition-colors">
+                  <i data-lucide="activity" class="text-primary w-5 h-5"></i>
                 </div>
                 <h3 class="text-xl font-bold">Theme Randomizer</h3>
               </div>
-              <button id="random-theme-btn" class="bg-cyan-400 text-black font-bold py-2 px-6 rounded-full hover:scale-105 active:scale-95 transition-transform shadow-lg shadow-cyan-400/20">Randomize</button>
+              <button id="random-theme-btn" class="bg-primary text-black font-bold py-2 px-6 rounded-full hover:scale-105 active:scale-95 transition-transform shadow-lg shadow-primary/20">Randomize</button>
             </div>
             <p class="text-sm text-neutral-400">Can't decide on a color? Let the algorithm choose a random theme for you.</p>
           </div>
@@ -1567,32 +1602,6 @@ function renderHome() {
         </div>
       </section>
 
-      <section id="certs" class="mb-32">
-        <div class="flex flex-col md:flex-row justify-between items-start md:items-end mb-12 gap-4">
-          <div>
-            <h2 class="text-3xl sm:text-4xl font-bold mb-4">Verified Credentials</h2>
-            <p class="text-neutral-400">Official certifications from industry leaders.</p>
-          </div>
-          <div class="hidden md:block h-px flex-1 bg-white/10 mx-12 mb-4"></div>
-        </div>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-          ${certificates.map(c => `
-            <div class="glass p-6 rounded-3xl flex items-center justify-between group hover:border-primary/50 transition-all duration-500">
-              <div class="flex items-center gap-6">
-                <div class="w-16 h-16 glass rounded-2xl flex items-center justify-center group-hover:bg-primary/10 transition-colors">
-                  <i data-lucide="check-circle-2" class="text-primary w-8 h-8"></i>
-                </div>
-                <div>
-                  <h3 class="font-bold text-lg group-hover:text-primary transition-colors">${c.title}</h3>
-                  <p class="text-[10px] font-mono text-neutral-500 uppercase tracking-widest mt-1">${c.issuer} • ${c.date}</p>
-                </div>
-              </div>
-              <a href="${c.link}" target="_blank" class="p-3 glass rounded-full hover:bg-primary hover:text-black transition-all">
-                <i data-lucide="external-link" class="w-5 h-5"></i>
-              </a>
-            </div>
-          `).join('')}
-        </div>
       </section>
 
       <section id="blog" class="mb-32">
@@ -1655,8 +1664,8 @@ function renderHome() {
                 </div>
                 
                 <div class="flex items-center gap-4 group">
-                  <div class="p-3 glass rounded-xl group-hover:bg-cyan-400/10 transition-colors">
-                    <i data-lucide="linkedin" class="text-cyan-400 w-5 h-5"></i>
+                  <div class="p-3 glass rounded-xl group-hover:bg-primary/10 transition-colors">
+                    <i data-lucide="linkedin" class="text-primary w-5 h-5"></i>
                   </div>
                   <div>
                     <p class="text-[10px] font-mono text-neutral-500 uppercase tracking-widest">LinkedIn</p>
@@ -1665,8 +1674,8 @@ function renderHome() {
                 </div>
                 
                 <div class="flex items-center gap-4 group">
-                  <div class="p-3 glass rounded-xl group-hover:bg-rose-400/10 transition-colors">
-                    <i data-lucide="github" class="text-rose-400 w-5 h-5"></i>
+                  <div class="p-3 glass rounded-xl group-hover:bg-primary/10 transition-colors">
+                    <i data-lucide="github" class="text-primary w-5 h-5"></i>
                   </div>
                   <div>
                     <p class="text-[10px] font-mono text-neutral-500 uppercase tracking-widest">GitHub</p>
@@ -1841,10 +1850,10 @@ function initTechStackBackground() {
 
   const geometry = new THREE.PlaneGeometry(20, 20, 20, 20);
   const material = new THREE.MeshBasicMaterial({
-    color: '#10b981',
+    color: '#ff004f',
     wireframe: true,
     transparent: true,
-    opacity: 0.05
+    opacity: 0.1
   });
   const mesh = new THREE.Mesh(geometry, material);
   mesh.rotation.x = -Math.PI / 2;
@@ -1892,8 +1901,8 @@ function applyDeviceSpecificTheme() {
     document.documentElement.classList.add('apple-theme');
   } else if (isSamsung || (isMobile && !isApple)) {
     // Samsung/Other: Linenant visuals (Emerald)
-    currentTheme = 'emerald';
-    document.body.setAttribute('data-theme', 'emerald');
+    currentTheme = 'primary';
+    document.body.setAttribute('data-theme', 'primary');
     document.documentElement.classList.add('samsung-theme');
   } else if (!isMobile) {
     // Laptop: Very Advanced Different Theme (Amber)
@@ -1907,11 +1916,60 @@ async function initHome() {
   applyDeviceSpecificTheme();
   initTechStackBackground();
   setupMobileMenu();
+  initTypingAnimation();
+  
+  // Sticky Nav Logic
+  const nav = document.getElementById('main-nav');
+  window.addEventListener('scroll', () => {
+    if (window.scrollY > 50) {
+      nav?.classList.add('glass', 'shadow-2xl', 'py-3');
+      nav?.classList.remove('py-4');
+    } else {
+      nav?.classList.remove('glass', 'shadow-2xl', 'py-3');
+      nav?.classList.add('py-4');
+    }
+  });
+
+  function initTypingAnimation() {
+    const roles = ['System Architect', 'Full Stack Developer', 'Co-founder Explyra', 'AI Enthusiast'];
+    let roleIndex = 0;
+    let charIndex = 0;
+    let isDeleting = false;
+    const typingEl = document.getElementById('typing-role');
+    
+    function type() {
+      if (!typingEl) return;
+      
+      const currentRole = roles[roleIndex];
+      if (isDeleting) {
+        typingEl.textContent = currentRole.substring(0, charIndex - 1);
+        charIndex--;
+      } else {
+        typingEl.textContent = currentRole.substring(0, charIndex + 1);
+        charIndex++;
+      }
+      
+      let typeSpeed = isDeleting ? 50 : 100;
+      
+      if (!isDeleting && charIndex === currentRole.length) {
+        isDeleting = true;
+        typeSpeed = 2000; // Pause at end
+      } else if (isDeleting && charIndex === 0) {
+        isDeleting = false;
+        roleIndex = (roleIndex + 1) % roles.length;
+        typeSpeed = 500;
+      }
+      
+      setTimeout(type, typeSpeed);
+    }
+    
+    type();
+  }
   
   // Theme Switcher Logic
   document.querySelectorAll('.theme-btn').forEach(btn => {
     btn.addEventListener('click', () => {
-      const themeId = btn.getAttribute('data-theme-id') || 'emerald';
+      const themeId = btn.getAttribute('data-theme-id') || 'primary';
       currentTheme = themeId;
       localStorage.setItem('portfolio-theme', themeId);
       document.body.setAttribute('data-theme', themeId);
@@ -2095,6 +2153,85 @@ async function initHome() {
           gsap.to(item, { opacity: 0.2, scale: 0.9, duration: 0.3 });
         }
       });
+    });
+  });
+
+  // Architect's Tooltip for Tech Pills
+  const techPills = document.querySelectorAll('.tech-pill');
+  let activeTooltip: HTMLElement | null = null;
+
+  const techDescriptions: Record<string, string> = {
+    'React': 'Chosen for its component-based architecture and virtual DOM efficiency',
+    'Node.js': 'Selected for event-driven, non-blocking I/O model perfect for real-time apps',
+    'TypeScript': 'Implemented for static type checking and enhanced code reliability',
+    'Python': 'Utilized for AI/ML capabilities and data processing excellence',
+    'AWS': 'Chosen for scalable cloud infrastructure and managed services',
+    'Docker': 'Implemented for containerization and consistent deployment environments'
+  };
+
+  techPills.forEach(pill => {
+    pill.addEventListener('mouseenter', (e) => {
+      const tech = pill.getAttribute('data-tech');
+      if (!tech || !techDescriptions[tech]) return;
+
+      // Remove existing tooltip
+      if (activeTooltip) {
+        activeTooltip.remove();
+      }
+
+      // Create tooltip
+      const tooltip = document.createElement('div');
+      tooltip.className = 'architect-tooltip fixed z-[200] glass px-4 py-3 rounded-xl border border-primary/20 bg-primary/5 backdrop-blur-sm shadow-[0_8px_32px_rgba(34,211,238,0.2)] opacity-0 pointer-events-none transition-all duration-300';
+      tooltip.innerHTML = `
+        <div class="flex items-start gap-3">
+          <div class="w-2 h-2 bg-primary rounded-full mt-1.5 flex-shrink-0"></div>
+          <div>
+            <p class="text-primary font-mono text-xs font-bold mb-1">${tech}</p>
+            <p class="text-white text-xs leading-relaxed max-w-xs">${techDescriptions[tech]}</p>
+          </div>
+        </div>
+      `;
+
+      document.body.appendChild(tooltip);
+      activeTooltip = tooltip;
+
+      // Position tooltip
+      const rect = pill.getBoundingClientRect();
+      const tooltipRect = tooltip.getBoundingClientRect();
+      
+      let left = rect.left + rect.width / 2 - tooltipRect.width / 2;
+      let top = rect.top - tooltipRect.height - 10;
+
+      // Adjust if tooltip goes off screen
+      if (left < 10) left = 10;
+      if (left + tooltipRect.width > window.innerWidth - 10) {
+        left = window.innerWidth - tooltipRect.width - 10;
+      }
+      if (top < 10) {
+        top = rect.bottom + 10;
+      }
+
+      tooltip.style.left = left + 'px';
+      tooltip.style.top = top + 'px';
+
+      // Animate in
+      requestAnimationFrame(() => {
+        tooltip.classList.remove('opacity-0');
+        tooltip.classList.add('opacity-100');
+      });
+    });
+
+    pill.addEventListener('mouseleave', () => {
+      if (activeTooltip) {
+        activeTooltip.classList.remove('opacity-100');
+        activeTooltip.classList.add('opacity-0');
+        setTimeout(() => {
+          if (activeTooltip) {
+            activeTooltip.remove();
+            activeTooltip = null;
+          }
+        }, 300);
+      }
     });
   });
 

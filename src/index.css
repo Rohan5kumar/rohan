@@ -1,7 +1,8 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
 
 /* System Architect Background System */
 .background-wrapper {
@@ -125,13 +126,15 @@
 }
 
 :root {
-  --primary: #10b981; /* Emerald 500 */
-  --primary-glow: rgba(16, 185, 129, 0.2);
-  --bg: #050505;
+  --primary: #ff004f; /* Vibrant Red */
+  --primary-glow: rgba(255, 0, 79, 0.3);
+  --bg: #080808;
   --text: #ffffff;
-  --text-muted: #a3a3a3;
-  --glass: rgba(255, 255, 255, 0.05);
-  --border: rgba(255, 255, 255, 0.1);
+  --text-muted: #ababab;
+  --glass: rgba(255, 255, 255, 0.03);
+  --border: rgba(255, 255, 255, 0.08);
+  --font-heading: 'Poppins', sans-serif;
+  --font-body: 'Inter', sans-serif;
 }
 
 [data-theme="ruby"] { --primary: #ef4444; --primary-glow: rgba(239, 68, 68, 0.2); }
@@ -152,14 +155,6 @@
   --border: rgba(0, 0, 0, 0.1);
 }
 
-[data-theme="light"] #bg-video {
-  opacity: 0.2;
-}
-
-[data-theme="light"] #wallpaper-container {
-  opacity: 0;
-  pointer-events: none;
-}
 
 [data-theme="light"] .text-neutral-400,
 [data-theme="light"] .text-neutral-500 {
@@ -186,8 +181,8 @@
   body {
     background-color: var(--bg);
     color: var(--text);
-    @apply font-sans selection:bg-emerald-500/30 overflow-x-hidden;
-    transition: background-color 0.5s ease, color 0.5s ease;
+    @apply font-sans selection:bg-red-500/30 overflow-x-hidden transition-all duration-500;
+    font-family: var(--font-body);
     position: relative;
   }
 
@@ -264,6 +259,55 @@
   animation: pulse-slow 3s infinite ease-in-out;
 }
 
+@keyframes typing {
+  from { width: 0 }
+  to { width: 100% }
+}
+
+@keyframes blink {
+  from, to { border-color: transparent }
+  50% { border-color: var(--primary) }
+}
+
+.hero-title-name {
+  font-family: var(--font-heading);
+  background: linear-gradient(to bottom, #fff, #888);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.typing-text {
+  color: var(--primary);
+  -webkit-text-fill-color: var(--primary);
+  border-right: 3px solid var(--primary);
+  animation: blink 0.75s step-end infinite;
+  white-space: nowrap;
+  overflow: hidden;
+  display: inline-block;
+}
+
+.hero-image-glow {
+  position: relative;
+  border-radius: 50%;
+  overflow: hidden;
+  box-shadow: 0 0 50px var(--primary-glow), 0 0 100px var(--primary-glow);
+}
+
+.hero-image-glow::after {
+  content: '';
+  position: absolute;
+  inset: -5px;
+  background: linear-gradient(45deg, var(--primary), transparent, var(--primary));
+  z-index: -1;
+  filter: blur(10px);
+  animation: rotate-border 4s linear infinite;
+}
+
+@keyframes rotate-border {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
 body.is-offline .animate-bounce,
 body.is-offline .animate-pulse,
 body.is-offline .animate-pulse-slow,
@@ -300,46 +344,31 @@ body.is-offline .animate-ping {
   .glass {
     background: linear-gradient(
       135deg,
-      rgba(255, 255, 255, 0.08) 0%,
-      rgba(255, 255, 255, 0.03) 100%
+      rgba(255, 255, 255, 0.05) 0%,
+      rgba(255, 255, 255, 0.01) 100%
     );
-    backdrop-filter: blur(8px) saturate(140%);
-    -webkit-backdrop-filter: blur(8px) saturate(140%);
-    border: 1px solid rgba(255, 255, 255, 0.12);
+    backdrop-filter: blur(12px) saturate(160%);
+    -webkit-backdrop-filter: blur(12px) saturate(160%);
+    border: 1px solid rgba(255, 255, 255, 0.08);
     box-shadow: 
-      0 8px 32px 0 rgba(0, 0, 0, 0.3),
-      inset 0 0 0 1px rgba(255, 255, 255, 0.05);
-    transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+      0 4px 24px -1px rgba(0, 0, 0, 0.2),
+      inset 0 0 0 1px rgba(255, 255, 255, 0.02);
+    transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
     position: relative;
     overflow: hidden;
-  }
-
-  .glass::before {
-    content: "";
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(
-      135deg,
-      rgba(255, 255, 255, 0.1) 0%,
-      transparent 50%,
-      rgba(255, 255, 255, 0.05) 100%
-    );
-    opacity: 0;
-    transition: opacity 0.5s ease;
-    pointer-events: none;
   }
 
   .glass:hover {
     background: linear-gradient(
       135deg,
-      rgba(255, 255, 255, 0.12) 0%,
-      rgba(255, 255, 255, 0.05) 100%
+      rgba(255, 255, 255, 0.08) 0%,
+      rgba(255, 255, 255, 0.02) 100%
     );
-    border-color: rgba(255, 255, 255, 0.25);
+    border-color: rgba(255, 255, 255, 0.15);
     box-shadow: 
-      0 12px 48px 0 rgba(0, 0, 0, 0.4),
-      inset 0 0 0 1px rgba(255, 255, 255, 0.15);
-    transform: translateY(-8px) scale(1.01);
+      0 20px 40px -10px rgba(0, 0, 0, 0.4),
+      inset 0 0 0 1px rgba(255, 255, 255, 0.1);
+    transform: translateY(-4px);
   }
 
 
