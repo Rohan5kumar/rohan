@@ -1,21 +1,15 @@
 {
+  "short_name": "Rohan",
   "name": "Rohan Krishnagoudar Portfolio",
-  "short_name": "Rohan K.",
-  "description": "Full Stack Developer Portfolio",
-  "start_url": "/",
-  "display": "standalone",
-  "background_color": "#050505",
-  "theme_color": "#10b981",
   "icons": [
     {
-      "src": "https://picsum.photos/seed/rohan/192/192",
-      "sizes": "192x192",
-      "type": "image/png"
-    },
-    {
-      "src": "https://picsum.photos/seed/rohan/512/512",
-      "sizes": "512x512",
-      "type": "image/png"
+      "src": "/favicon.svg",
+      "type": "image/svg+xml",
+      "sizes": "192x192"
     }
-  ]
+  ],
+  "start_url": ".",
+  "display": "standalone",
+  "theme_color": "#ff004f",
+  "background_color": "#020205"
 }
