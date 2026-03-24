@@ -1,5 +1,5 @@
 import './index.css';
-import { createIcons, Github, Linkedin, Mail, ArrowRight, Download, Code2, Terminal, ExternalLink, ArrowLeft, Send, Bot, User, Loader2, CheckCircle2, ChevronLeft, ChevronRight, X, Sparkles, Menu, Cpu, BookOpen, Activity, Play, WifiOff, Star, MessageSquare, Zap, ShieldCheck, Layout, Database, Server, Gamepad2, Award } from 'lucide';
+import { createIcons, Github, Linkedin, Mail, ArrowRight, Download, Code2, Terminal, ExternalLink, ArrowLeft, Send, Bot, User, Loader2, CheckCircle2, ChevronLeft, ChevronRight, X, Sparkles, Menu, Cpu, BookOpen, Activity, Play, WifiOff, Star, MessageSquare, Zap, ShieldCheck, Layout, Database, Server, Gamepad2, Award, Book, AlertCircle } from 'lucide';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import * as THREE from 'three';
@@ -1175,7 +1175,7 @@ function renderHome() {
               Full-Stack Developer & <br/>
               <span class="text-neutral-500">Aspiring System Architect</span>
             </h2>
-            <div class="glass p-8 rounded-[2.5rem] border-white/5 relative overflow-hidden group">
+            <div class="glass p-8 rounded-[2.5rem] border-white/5 relative overflow-hidden group mb-6">
               <div class="absolute -top-24 -right-24 w-48 h-48 bg-primary/10 blur-3xl rounded-full group-hover:bg-primary/20 transition-all duration-700"></div>
               <p class="text-lg text-neutral-300 leading-relaxed italic mb-6">
                 "I build bridges between complex backend infrastructures and seamless user experiences. As a Class 11 student and developer, I focus on creating scalable, secure, and high-performance web applications that solve real-world problems."
@@ -1184,12 +1184,28 @@ function renderHome() {
                 <p>
                   My journey into technology started with a curiosity about how the web scales to millions of users. Today, I specialize in the <strong>MERN stack</strong> (MongoDB, Express, React, Node.js) with a deep interest in <strong>System Architecture</strong>.
                 </p>
-                <p>
-                  I don't just build features; I design systems. Whether it's implementing <strong>Role-Based Access Control (RBAC)</strong> in a chat application or optimizing <strong>CI/CD pipelines</strong> for automated deployments, I treat every project as an engineering challenge. My goal is to transition from a full-stack developer to a system architect, focusing on distributed systems and cloud infrastructure.
-                </p>
-                <p>
-                  When I’m not debugging React hooks or configuring Nginx reverse proxies, I’m exploring the world of <strong>Forex trading</strong> and <strong>AI-driven health tools</strong>, constantly looking for ways to merge financial logic with modern software engineering.
-                </p>
+              </div>
+            </div>
+
+            <!-- GitHub Stats Dashboard -->
+            <div id="github-stats-container" class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-8">
+              <div class="glass p-6 rounded-3xl border-primary/20 flex items-center justify-between animate-pulse">
+                <div class="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center">
+                  <i data-lucide="github" class="text-primary w-6 h-6"></i>
+                </div>
+                <div class="text-right">
+                  <p class="text-[10px] font-mono text-neutral-500 uppercase tracking-widest">Contributions</p>
+                  <p class="text-2xl font-black text-white">Loading...</p>
+                </div>
+              </div>
+              <div class="glass p-6 rounded-3xl border-primary/20 flex items-center justify-between animate-pulse">
+                <div class="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center">
+                  <i data-lucide="book" class="text-primary w-6 h-6"></i>
+                </div>
+                <div class="text-right">
+                  <p class="text-[10px] font-mono text-neutral-500 uppercase tracking-widest">Projects</p>
+                  <p class="text-2xl font-black text-white">Loading...</p>
+                </div>
               </div>
             </div>
             
@@ -1917,6 +1933,7 @@ async function initHome() {
   initTechStackBackground();
   setupMobileMenu();
   initTypingAnimation();
+  fetchGitHubStats();
   
   // Sticky Nav Logic
   const nav = document.getElementById('main-nav');
@@ -2490,6 +2507,54 @@ function initConnectivityManager() {
 }
 
 initConnectivityManager();
+
+async function fetchGitHubStats() {
+  const container = document.getElementById('github-stats-container');
+  if (!container) return;
+
+  try {
+    const response = await fetch('/.netlify/functions/get-github-stats');
+    if (!response.ok) throw new Error('Stats unavailable');
+    
+    const data = await response.json();
+    const contributions = data.contributionsCollection.contributionCalendar.totalContributions;
+    const repos = data.repositories.nodes;
+
+    container.innerHTML = `
+      <div class="glass p-6 rounded-3xl border-primary/20 flex items-center justify-between group hover:bg-primary/5 transition-all">
+        <div class="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform">
+          <i data-lucide="github" class="text-primary w-6 h-6"></i>
+        </div>
+        <div class="text-right">
+          <p class="text-[10px] font-mono text-neutral-500 uppercase tracking-widest">Contributions (Year)</p>
+          <p class="text-2xl font-black text-white group-hover:text-primary transition-colors">${contributions}</p>
+        </div>
+      </div>
+      <div class="glass p-6 rounded-3xl border-primary/20 flex items-center justify-between group hover:bg-primary/5 transition-all">
+        <div class="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform">
+          <i data-lucide="book" class="text-primary w-6 h-6"></i>
+        </div>
+        <div class="text-right">
+          <p class="text-[10px] font-mono text-neutral-500 uppercase tracking-widest">Active Projects</p>
+          <p class="text-2xl font-black text-white group-hover:text-primary transition-colors">${repos.length}</p>
+        </div>
+      </div>
+    `;
+    
+    // Refresh Lucide icons
+    createIcons({ icons: { Github, Book } });
+    
+  } catch (error) {
+    console.error('GitHub Stats Fetch Error:', error);
+    container.innerHTML = `
+      <div class="col-span-full text-center py-4 text-xs font-mono text-neutral-500">
+        <i data-lucide="alert-circle" class="w-4 h-4 inline mr-2 text-primary"></i>
+        GitHub Stats temporarily cached offline
+      </div>
+    `;
+    createIcons({ icons: { AlertCircle } });
+  }
+}
 
 /**
  * Initializes a 3D Particle Wave background using Three.js
