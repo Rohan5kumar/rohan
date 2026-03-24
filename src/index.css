@@ -490,7 +490,7 @@ body.is-offline .animate-ping {
     color: var(--text);
   }
 
-  .text-text-muted {
+  .text-muted {
     color: var(--text-muted);
   }
 

@@ -980,7 +980,7 @@ function renderHome() {
                 <i data-lucide="layout" class="text-primary w-12 h-12 group-hover:scale-110 transition-transform"></i>
               </div>
               <h3 class="text-2xl font-bold mb-4">Web Design</h3>
-              <p class="text-text-muted leading-relaxed">
+              <p class="text-muted leading-relaxed">
                 Creating visually stunning and user-centric designs that elevate your brand and provide seamless experiences.
               </p>
               <a href="#contact" class="inline-block mt-6 text-primary font-bold hover:underline">Learn More →</a>
@@ -991,7 +991,7 @@ function renderHome() {
                 <i data-lucide="code-2" class="text-primary w-12 h-12 group-hover:scale-110 transition-transform"></i>
               </div>
               <h3 class="text-2xl font-bold mb-4">Web Development</h3>
-              <p class="text-text-muted leading-relaxed">
+              <p class="text-muted leading-relaxed">
                 Building robust, scalable applications with clean code and high performance using modern frameworks.
               </p>
               <a href="#contact" class="inline-block mt-6 text-primary font-bold hover:underline">Learn More →</a>
@@ -1002,7 +1002,7 @@ function renderHome() {
                 <i data-lucide="cpu" class="text-primary w-12 h-12 group-hover:scale-110 transition-transform"></i>
               </div>
               <h3 class="text-2xl font-bold mb-4">System Architecture</h3>
-              <p class="text-text-muted leading-relaxed">
+              <p class="text-muted leading-relaxed">
                 Designing complex digital ecosystems and cloud infrastructure optimized for massive scale.
               </p>
               <a href="#contact" class="inline-block mt-6 text-primary font-bold hover:underline">Learn More →</a>
