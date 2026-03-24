@@ -1,7 +1,10 @@
 import * as THREE from 'three';
 
+const isClient = typeof window !== 'undefined' && typeof document !== 'undefined';
+const NEBULA_CANVAS_ID = 'nebula-canvas';
+
 export class BackgroundManager {
-  private container: HTMLElement;
+  private container: HTMLElement | null = null;
   private canvas: HTMLCanvasElement | null = null;
   private gl: WebGLRenderingContext | WebGL2RenderingContext | null = null;
   private animationId: number | null = null;
@@ -18,25 +21,61 @@ export class BackgroundManager {
   private renderer: THREE.WebGLRenderer | null = null;
   private particles: THREE.Points | null = null;
 
+  // Event handlers bound to the instance so they can be removed on destroy
+  private handleResize = () => {
+    if (!this.canvas || !this.gl) return;
+    const dpr = window.devicePixelRatio || 1;
+    this.canvas.width = window.innerWidth * dpr;
+    this.canvas.height = window.innerHeight * dpr;
+    this.gl.viewport(0, 0, this.canvas.width, this.canvas.height);
+  };
+
+  private updateMousePosition(clientX: number, clientY: number) {
+    const width = window.innerWidth || 1;
+    const height = window.innerHeight || 1;
+    this.targetMouseX = clientX / width;
+    this.targetMouseY = clientY / height;
+  }
+
+  private handleMouseMove = (event: MouseEvent) => {
+    this.updateMousePosition(event.clientX, event.clientY);
+  };
+
+  private handleTouchMove = (event: TouchEvent) => {
+    if (!this.canvas) return;
+    const touch = event.touches[0];
+    if (!touch) return;
+
+    this.updateMousePosition(touch.clientX, touch.clientY);
+  };
+
   constructor(containerId: string = 'background-container') {
+    if (!isClient) {
+      this.container = null;
+      return;
+    }
+
     this.container = document.getElementById(containerId) || document.body;
     this.init();
     this.setupEventListeners();
   }
 
   private init() {
+    if (!this.container) return;
+
     // Create background structure without static image
     this.container.innerHTML = `
       <div class="background-wrapper" style="background: #0B0B0B;">
         <img src="/hero-landscape.jpg" class="background-image" style="opacity: 0.4; filter: brightness(0.6) contrast(1.2) saturate(1.2);">
-        <canvas id="nebula-canvas" class="fluid-canvas" style="opacity: 0.7; mix-blend-mode: screen;"></canvas>
+        <canvas id="${NEBULA_CANVAS_ID}" class="fluid-canvas" style="opacity: 0.7; mix-blend-mode: screen;"></canvas>
         <div id="particle-container" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 1;"></div>
         <div class="backdrop-blur"></div>
       </div>
     `;
 
-    this.canvas = document.getElementById('nebula-canvas') as HTMLCanvasElement;
-    if (!this.canvas) return;
+    const canvasElement = document.getElementById(NEBULA_CANVAS_ID);
+    if (!(canvasElement instanceof HTMLCanvasElement)) return;
+    this.canvas = canvasElement;
 
     this.gl = this.canvas.getContext('webgl2', { alpha: false }) || this.canvas.getContext('webgl', { alpha: false });
     if (!this.gl) return;
@@ -50,15 +89,14 @@ export class BackgroundManager {
   private setupCanvas() {
     if (!this.canvas || !this.gl) return;
 
-    const handleResize = () => {
-      const dpr = window.devicePixelRatio || 1;
-      this.canvas!.width = window.innerWidth * dpr;
-      this.canvas!.height = window.innerHeight * dpr;
-      this.gl!.viewport(0, 0, this.canvas!.width, this.canvas!.height);
-    };
+    this.handleResize();
+    window.addEventListener('resize', this.handleResize);
+  }
 
-    handleResize();
-    window.addEventListener('resize', handleResize);
+  private setupEventListeners() {
+    if (!isClient) return;
+    window.addEventListener('mousemove', this.handleMouseMove, { passive: true });
+    this.canvas?.addEventListener('touchmove', this.handleTouchMove, { passive: true });
   }
 
   private createShaders() {
@@ -249,11 +287,20 @@ export class BackgroundManager {
   public destroy() {
     if (this.animationId) cancelAnimationFrame(this.animationId);
     if (this.renderer) this.renderer.dispose();
+    if (isClient) {
+      window.removeEventListener('resize', this.handleResize);
+      window.removeEventListener('mousemove', this.handleMouseMove);
+      this.canvas?.removeEventListener('touchmove', this.handleTouchMove);
+    }
   }
 }
 
 let backgroundManager: BackgroundManager | null = null;
 export const initBackground = () => {
+  if (!isClient) {
+    return null;
+  }
+
   if (!backgroundManager) backgroundManager = new BackgroundManager();
   return backgroundManager;
 };
