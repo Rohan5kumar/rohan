@@ -22,7 +22,6 @@ export class BackgroundManager {
     // Create background structure without static image
     this.container.innerHTML = `
       <div class="background-wrapper" style="background: #020205;">
-        <img src="/image.jpeg" alt="Professional Background" class="background-image" onerror="this.style.display='none'">
         <canvas id="nebula-canvas" class="fluid-canvas" style="opacity: 0.8;"></canvas>
         <div class="backdrop-blur" style="background: radial-gradient(circle at center, transparent 0%, rgba(0,0,0,0.4) 100%);"></div>
       </div>
