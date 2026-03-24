@@ -11,6 +11,7 @@ export class BackgroundManager {
   private targetMouseX: number = 0.5;
   private targetMouseY: number = 0.5;
   private startTime: number = Date.now();
+  private cleanupCallbacks: Array<() => void> = [];
 
   // Three.js for particles
   private scene: THREE.Scene | null = null;
@@ -59,6 +60,32 @@ export class BackgroundManager {
 
     handleResize();
     window.addEventListener('resize', handleResize);
+    this.cleanupCallbacks.push(() => window.removeEventListener('resize', handleResize));
+  }
+
+  private setupEventListeners() {
+    if (typeof window === 'undefined') return;
+
+    const handlePointer = (x: number, y: number) => {
+      this.targetMouseX = x / window.innerWidth;
+      this.targetMouseY = 1 - y / window.innerHeight;
+    };
+
+    const handleMouseMove = (event: MouseEvent) => handlePointer(event.clientX, event.clientY);
+    const handleTouchMove = (event: TouchEvent) => {
+      if (event.touches.length > 0) {
+        const touch = event.touches[0];
+        handlePointer(touch.clientX, touch.clientY);
+      }
+    };
+
+    window.addEventListener('mousemove', handleMouseMove);
+    window.addEventListener('touchmove', handleTouchMove, { passive: true });
+
+    this.cleanupCallbacks.push(
+      () => window.removeEventListener('mousemove', handleMouseMove),
+      () => window.removeEventListener('touchmove', handleTouchMove)
+    );
   }
 
   private createShaders() {
@@ -249,6 +276,8 @@ export class BackgroundManager {
   public destroy() {
     if (this.animationId) cancelAnimationFrame(this.animationId);
     if (this.renderer) this.renderer.dispose();
+    this.cleanupCallbacks.forEach((cb) => cb());
+    this.cleanupCallbacks = [];
   }
 }
 
