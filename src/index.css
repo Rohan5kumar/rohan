@@ -481,13 +481,21 @@ body.is-offline .animate-ping {
   }
 }
 
-.text-gradient {
-  @apply bg-clip-text text-transparent;
-  background-image: linear-gradient(to right, var(--primary), #ffffff);
-}
+  .text-gradient {
+    @apply bg-clip-text text-transparent;
+    background-image: linear-gradient(to right, var(--primary), #ffffff);
+  }
 
-/* Carousel Styles */
-.carousel-container {
+  .text-ink {
+    color: var(--text);
+  }
+
+  .text-text-muted {
+    color: var(--text-muted);
+  }
+
+  /* Carousel Styles */
+  .carousel-container {
   position: relative;
   width: 100%;
   overflow: hidden;

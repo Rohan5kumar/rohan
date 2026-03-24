@@ -904,9 +904,9 @@ function renderHome() {
         </div>
         
         <div class="hidden md:flex items-center gap-8">
-          <a href="#hero" class="text-xs font-bold uppercase tracking-widest text-primary hover:bloom-amber transition-all underline-offset-8">Experience</a>
-          <a href="#services" class="text-xs font-bold uppercase tracking-widest text-neutral-400 hover:text-white transition-all">Testimonials</a>
-          <a href="#skills" class="text-xs font-bold uppercase tracking-widest text-neutral-400 hover:text-white transition-all">Certificates</a>
+          <a href="#experience" class="text-xs font-bold uppercase tracking-widest text-primary hover:bloom-amber transition-all underline-offset-8">Experience</a>
+          <a href="#testimonials" class="text-xs font-bold uppercase tracking-widest text-neutral-400 hover:text-white transition-all">Testimonials</a>
+          <a href="#skills" class="text-xs font-bold uppercase tracking-widest text-neutral-400 hover:text-white transition-all">Skills</a>
           <a href="#contact" class="text-xs font-bold uppercase tracking-widest text-neutral-400 hover:text-white transition-all">Contact</a>
         </div>
 
@@ -914,6 +914,15 @@ function renderHome() {
           <i data-lucide="menu" class="w-5 h-5"></i>
         </button>
       </nav>
+
+      <div id="mobile-menu" class="md:hidden fixed top-20 left-0 right-0 mx-6 p-6 glass-refined rounded-3xl opacity-0 invisible translate-y-4 transition-all duration-300">
+        <div class="flex flex-col gap-4 text-center text-sm font-semibold">
+          <a href="#experience" class="mobile-nav-link text-white hover:text-primary transition-colors">Experience</a>
+          <a href="#testimonials" class="mobile-nav-link text-white hover:text-primary transition-colors">Testimonials</a>
+          <a href="#skills" class="mobile-nav-link text-white hover:text-primary transition-colors">Skills</a>
+          <a href="#contact" class="mobile-nav-link text-white hover:text-primary transition-colors">Contact</a>
+        </div>
+      </div>
 
       <section id="hero" class="min-h-screen flex flex-col items-center justify-center pt-32 pb-20 text-center">
         <div class="max-w-4xl mx-auto" id="hero-text">
@@ -955,8 +964,6 @@ function renderHome() {
             </div>
           </div>
         </div>
-      </section>
-
       </section>
 
       <!-- Services Section -->
