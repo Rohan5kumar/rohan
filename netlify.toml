@@ -1,26 +1,7 @@
 [build]
+  base = "rohan-architect-next"
   command = "npm run build"
-  publish = "dist"
-  base = "/"
 
 [build.environment]
-  NODE_VERSION = "20"
-  NPM_VERSION = "9"
-
-[[redirects]]
-  from = "/*"
-  to = "/index.html"
-  status = 200
-
-[[headers]]
-  for = "/*"
-  [headers.values]
-    X-Frame-Options = "DENY"
-    X-XSS-Protection = "1; mode=block"
-    X-Content-Type-Options = "nosniff"
-
-[context.production]
-  command = "npm run build"
-
-[context.deploy-preview]
-  command = "npm run build"
+  NODE_VERSION = "20.20.2"
+  NPM_VERSION = "10.9.0"
