@@ -34,7 +34,9 @@ export default function ArchitectTerminal() {
   }, []);
 
   useEffect(() => {
-    endRef.current?.scrollIntoView({ behavior: 'smooth' });
+    if (history.length > 3) {
+      endRef.current?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
   }, [history]);
 
   const handleCommand = async (e: React.FormEvent) => {
