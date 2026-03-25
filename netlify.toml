@@ -1,7 +1,12 @@
 [build]
   base = "rohan-architect-next"
   command = "npm run build"
+  publish = ".next"
 
 [build.environment]
   NODE_VERSION = "20.20.2"
   NPM_VERSION = "10.9.0"
+
+[[plugins]]
+  package = "@netlify/plugin-nextjs"
+
