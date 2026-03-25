@@ -34,6 +34,29 @@ const ModalContainer = () => {
   );
 };
 
+import { IntroLoader } from './components/IntroLoader';
+
+// ... (existing code stays)
+
+export const initIntroLoader = (onComplete: () => void) => {
+  const container = document.createElement('div');
+  container.id = 'intro-loader-root';
+  document.body.appendChild(container);
+
+  const root = createRoot(container);
+  
+  const handleComplete = () => {
+    onComplete();
+    // Use a small delay before unmounting to allow exit animation to play
+    setTimeout(() => {
+      root.unmount();
+      container.remove();
+    }, 2000); // Sufficient time for the 800ms exit + buffer
+  };
+
+  root.render(<IntroLoader onComplete={handleComplete} />);
+};
+
 export const initModalBridge = () => {
   const container = document.createElement('div');
   container.id = 'project-modal-root';

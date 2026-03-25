@@ -1,5 +1,5 @@
 import './index.css';
-import { createIcons, Github, Linkedin, Mail, ArrowRight, Download, Code2, Terminal, ExternalLink, ArrowLeft, Send, Bot, User, Loader2, CheckCircle2, ChevronLeft, ChevronRight, X, Sparkles, Menu, Cpu, BookOpen, Activity, Play, WifiOff, Star, MessageSquare, Zap, ShieldCheck, Layout, Database, Server, Gamepad2, Award, Book, AlertCircle } from 'lucide';
+import { createIcons, Github, Linkedin, Mail, ArrowRight, Download, Code2, Terminal, ExternalLink, ArrowLeft, Send, Bot, User, Loader2, CheckCircle2, ChevronLeft, ChevronRight, X, Sparkles, Menu, Cpu, BookOpen, Activity, Play, WifiOff, Star, MessageSquare, Zap, ShieldCheck, Layout, Database, Server, Gamepad2, Award, Book, AlertCircle, Eye, FileText } from 'lucide';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import * as THREE from 'three';
@@ -7,7 +7,7 @@ import * as CANNON from 'cannon-es';
 import confetti from 'canvas-confetti';
 import { GoogleGenAI } from "@google/genai";
 import mermaid from 'mermaid';
-import { initModalBridge } from './modalBridge';
+import { initModalBridge, initIntroLoader } from './modalBridge';
 import { initBackground } from './components/Background';
 
 mermaid.initialize({
@@ -113,7 +113,7 @@ const blogPosts = [
   { id: 3, title: 'Next-Gen Portfolio Design', date: 'Feb 28, 2026', excerpt: 'Why minimalism and micro-interactions are the future.', category: 'Design' },
 ];
 
-
+const certificates = []; // Empty or remove if possible, but keeping as empty to avoid breaks
 
 const techStack = [
   { 
@@ -304,7 +304,7 @@ async function router() {
     gsap.to(app, { opacity: 1, y: 0, duration: 0.5, ease: 'power2.out' });
     
     createIcons({
-      icons: { Github, Linkedin, Mail, ArrowRight, Download, Code2, Terminal, ExternalLink, ArrowLeft, Send, Bot, User, Loader2, CheckCircle2, ChevronLeft, ChevronRight, Sparkles, X, Menu, Cpu, BookOpen, Activity, Play, Star, MessageSquare, Zap, ShieldCheck, Layout, Database, Server, Gamepad2 }
+      icons: { Github, Linkedin, Mail, ArrowRight, Download, Code2, Terminal, ExternalLink, ArrowLeft, Send, Bot, User, Loader2, CheckCircle2, ChevronLeft, ChevronRight, Sparkles, X, Menu, Cpu, BookOpen, Activity, Play, Star, MessageSquare, Zap, ShieldCheck, Layout, Database, Server, Gamepad2, Eye, FileText, WifiOff }
     });
 
     initCustomCursor();
@@ -496,6 +496,18 @@ window.addEventListener('popstate', router);
 
 
 document.addEventListener('DOMContentLoaded', () => {
+  const app = document.getElementById('app');
+  const hasSeenIntro = sessionStorage.getItem('hasSeenIntro') === 'true';
+
+  if (!hasSeenIntro && app) {
+    app.classList.add('hide-app');
+    initIntroLoader(() => {
+      app.classList.remove('hide-app');
+      // Re-trigger GSAP animations for the hero section
+      initHome(); 
+    });
+  }
+
   // Initialize new Background system
   initBackground();
   
@@ -904,9 +916,8 @@ function renderHome() {
         </div>
         
         <div class="hidden md:flex items-center gap-8">
-          <a href="#hero" class="text-xs font-bold uppercase tracking-widest text-primary hover:bloom-amber transition-all underline-offset-8">Experience</a>
-          <a href="#services" class="text-xs font-bold uppercase tracking-widest text-neutral-400 hover:text-white transition-all">Testimonials</a>
-          <a href="#skills" class="text-xs font-bold uppercase tracking-widest text-neutral-400 hover:text-white transition-all">Certificates</a>
+          <a href="#experience" class="text-xs font-bold uppercase tracking-widest text-neutral-400 hover:text-white transition-all">Experience</a>
+          <a href="#testimonials" class="text-xs font-bold uppercase tracking-widest text-neutral-400 hover:text-white transition-all">Testimonials</a>
           <a href="#contact" class="text-xs font-bold uppercase tracking-widest text-neutral-400 hover:text-white transition-all">Contact</a>
         </div>
 
@@ -915,44 +926,54 @@ function renderHome() {
         </button>
       </nav>
 
-      <section id="hero" class="min-h-screen flex flex-col items-center justify-center pt-32 pb-20 text-center">
-        <div class="max-w-4xl mx-auto" id="hero-text">
-          <div class="inline-flex items-center gap-2 px-4 py-2 glass-refined rounded-full text-primary text-[10px] font-mono uppercase tracking-[0.3em] mb-8 animate-pulse">
-            FULL-STACK DEVELOPER & ASPIRING SYSTEM ARCHITECT
+      <section id="hero" class="min-h-screen relative flex items-center overflow-hidden mb-24 pt-24 lg:pt-0">
+        <div class="container mx-auto px-6 z-10 flex flex-col lg:flex-row items-center justify-between gap-12">
+          <div class="max-w-4xl" id="hero-text">
+            <span class="text-primary font-mono mb-4 block tracking-widest uppercase text-xs sm:text-sm">
+              System Architect & Co-Founder @ Explyra
+            </span>
+            <h1 class="text-5xl sm:text-7xl md:text-8xl lg:text-9xl font-bold mb-6 sm:mb-8 tracking-tighter text-white leading-[0.85]">
+              Rohan <br class="hidden sm:block" />
+              <span class="text-neutral-500">Krishnagoudar</span>
+            </h1>
+            <p class="text-lg sm:text-xl text-neutral-400 max-w-xl leading-relaxed mb-8 sm:mb-12">
+              System Architect and Full-Stack Developer. Co-founder of Explyra. 
+              Engineering scalable, secure digital ecosystems with architectural precision.
+            </p>
+            <div class="flex flex-wrap gap-4 sm:gap-6 items-center">
+              <button id="download-cv" class="w-full sm:w-auto bg-primary hover:opacity-90 text-bg-deep font-bold py-4 px-8 rounded-full transition-all transform hover:scale-105 flex items-center justify-center gap-2 shadow-[0_0_20px_rgba(var(--primary-rgb),0.3)]">
+                Download CV <i data-lucide="download"></i>
+              </button>
+              <button id="see-cv" class="w-full sm:w-auto glass hover:bg-muted text-white font-bold py-4 px-8 rounded-full transition-all transform hover:scale-105 flex items-center justify-center gap-2 border border-white/20">
+                See CV <i data-lucide="eye"></i>
+              </button>
+              <button onclick="showTechStackDashboard()" class="w-full sm:w-auto glass hover:bg-purple-500/20 text-purple-400 font-mono py-4 px-8 rounded-full transition-all transform hover:scale-105 flex items-center justify-center gap-2 border border-purple-400/20 hover:border-purple-400/40">
+                Tech Stack <i data-lucide="layout"></i>
+              </button>
+              <a href="#contact" class="w-full sm:w-auto bg-white hover:bg-opacity-90 text-black font-bold py-4 px-8 rounded-full transition-all transform hover:scale-105 flex items-center justify-center gap-2 shadow-lg">
+                Establish Connection <i data-lucide="message-square"></i>
+              </a>
+              <div class="flex gap-4">
+                <a href="https://github.com/rohankumarkv" class="p-3 glass rounded-full hover:bg-muted transition-colors"><i data-lucide="github"></i></a>
+                <a href="https://linkedin.com/in/rohan-k" class="p-3 glass rounded-full hover:bg-muted transition-colors"><i data-lucide="linkedin"></i></a>
+                <a href="mailto:rkg22122008@gmail.com" class="p-3 glass rounded-full hover:bg-muted transition-colors"><i data-lucide="mail"></i></a>
+              </div>
+            </div>
           </div>
-          
-          <h1 class="text-7xl md:text-9xl font-black mb-2 sci-fi-header tracking-tighter text-white leading-[0.8]">
-            Rohan
-          </h1>
-          <h1 class="text-7xl md:text-9xl font-black mb-10 sci-fi-header tracking-tighter text-neutral-500 leading-[0.8]">
-            Krishnagoudar
-          </h1>
-          
-          <p class="text-neutral-400 text-lg md:text-xl mb-12 max-w-2xl mx-auto leading-relaxed">
-            I build bridges between complex backend infrastructures and seamless user experiences. 
-            Designing scalable, secure, and high-performance web applications.
-          </p>
-          
-          <div class="flex flex-wrap gap-6 justify-center">
-            <button id="download-cv" class="group relative px-8 py-4 bg-primary text-black font-black uppercase tracking-widest rounded-xl overflow-hidden hover:scale-105 transition-all">
-              <span class="relative z-10">Deploy Vision</span>
-              <div class="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300"></div>
-            </button>
-            <button id="see-cv" class="px-8 py-4 glass-refined text-white font-black uppercase tracking-widest rounded-xl hover:bg-white/5 transition-all">
-              Architecture
-            </button>
+
+          <!-- Mobile Hero Image -->
+          <div class="lg:hidden w-full max-w-sm mt-8" id="hero-image-mobile">
+            <img src="/image.jpeg" alt="Rohan Krishnagoudar" class="w-full h-auto rounded-3xl shadow-2xl transition-all duration-700 hover:grayscale-0 grayscale" onerror="this.src='/hero-landscape.jpg'">
           </div>
         </div>
 
-        <div class="mt-20 w-full max-w-5xl mx-auto px-6" id="hero-image">
-          <div class="relative aspect-video rounded-3xl overflow-hidden border border-white/10 glass-refined shadow-2xl">
-            <img src="/hero-landscape.jpg" class="w-full h-full object-cover">
-            <div class="absolute inset-0 bg-gradient-to-t from-bg-deep to-transparent opacity-60"></div>
-            <div class="absolute inset-0 flex items-center justify-center">
-              <div class="w-20 h-20 rounded-full bg-primary/20 backdrop-blur-md flex items-center justify-center border border-primary/30 group cursor-pointer hover:scale-110 transition-all">
-                <i data-lucide="play" class="text-primary w-8 h-8 fill-primary"></i>
-              </div>
-            </div>
+        <!-- Large Desktop Hero Image -->
+        <div class="absolute top-0 right-0 w-[45%] h-full hidden lg:block" id="hero-image">
+          <div class="relative w-full h-full">
+            <img src="/image.jpeg" alt="Rohan Krishnagoudar" class="w-full h-full object-cover shadow-2xl" 
+                 style="mask-image: linear-gradient(to right, transparent, black 15%); -webkit-mask-image: linear-gradient(to right, transparent, black 15%);"
+                 onerror="this.src='/hero-landscape.jpg'">
+            <div class="absolute inset-0 bg-gradient-to-r from-bg-deep via-transparent to-transparent opacity-60"></div>
           </div>
         </div>
       </section>
@@ -1192,12 +1213,12 @@ function renderHome() {
             </div>
             <h2 class="text-4xl sm:text-5xl font-bold tracking-tighter leading-tight">
               Full-Stack Developer & <br/>
-              <span class="text-neutral-500">Aspiring System Architect</span>
+              <span class="text-neutral-500">System Architect</span>
             </h2>
             <div class="glass p-8 rounded-[2.5rem] border-white/5 relative overflow-hidden group mb-6">
               <div class="absolute -top-24 -right-24 w-48 h-48 bg-primary/10 blur-3xl rounded-full group-hover:bg-primary/20 transition-all duration-700"></div>
               <p class="text-lg text-neutral-300 leading-relaxed italic mb-6">
-                "I build bridges between complex backend infrastructures and seamless user experiences. As a Class 11 student and developer, I focus on creating scalable, secure, and high-performance web applications that solve real-world problems."
+                "I engineer scalable digital infrastructure and high-performance applications. Focusing on architectural precision and secure ecosystems to solve real-world problems."
               </p>
               <div class="space-y-4 text-neutral-400 leading-relaxed">
                 <p>
@@ -1284,53 +1305,56 @@ function renderHome() {
           <div class="hidden md:block h-px flex-1 bg-muted mx-12 mb-4"></div>
         </div>
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-          <div class="glass p-8 rounded-3xl space-y-6 group hover:border-primary/30 transition-all duration-500">
-            <div class="flex items-center justify-between">
-              <div class="flex items-center gap-3">
-                <div class="p-3 bg-primary/10 rounded-xl group-hover:bg-primary/20 transition-colors">
-                  <i data-lucide="play" class="text-primary w-5 h-5"></i>
-                </div>
-                <h3 class="text-xl font-bold">Confetti Cannon</h3>
+          <div class="glass p-8 rounded-[2rem] flex flex-col h-full group hover:border-primary/30 transition-all duration-500 shadow-xl">
+            <div class="flex items-center gap-4 mb-6">
+              <div class="p-3 bg-primary/10 rounded-2xl group-hover:bg-primary/20 transition-colors">
+                <i data-lucide="play" class="text-primary w-6 h-6"></i>
               </div>
-              <button id="confetti-btn" class="bg-primary text-black font-bold py-2 px-6 rounded-full hover:scale-105 active:scale-95 transition-transform shadow-lg shadow-primary/20">Launch</button>
+              <h3 class="text-xl font-bold tracking-tight">Confetti Cannon</h3>
             </div>
-            <p class="text-sm text-neutral-400">A simple demonstration of canvas-confetti integration. Click the button to celebrate!</p>
+            <p class="text-sm text-neutral-400 mb-8 flex-1 leading-relaxed">
+              A precise demonstration of high-performance canvas-confetti integration. Click to trigger an architectural celebration.
+            </p>
+            <button id="confetti-btn" class="w-full bg-primary text-black font-black uppercase tracking-widest text-xs py-4 px-6 rounded-xl hover:scale-[1.02] active:scale-95 transition-all shadow-lg shadow-primary/20 hover:shadow-primary/40">Launch</button>
           </div>
-          <div class="glass p-8 rounded-3xl space-y-6 group hover:border-primary/30 transition-all duration-500">
-            <div class="flex items-center justify-between">
-              <div class="flex items-center gap-3">
-                <div class="p-3 bg-primary/10 rounded-xl group-hover:bg-primary/20 transition-colors">
-                  <i data-lucide="activity" class="text-primary w-5 h-5"></i>
-                </div>
-                <h3 class="text-xl font-bold">Theme Randomizer</h3>
+
+          <div class="glass p-8 rounded-[2rem] flex flex-col h-full group hover:border-primary/30 transition-all duration-500 shadow-xl">
+            <div class="flex items-center gap-4 mb-6">
+              <div class="p-3 bg-primary/10 rounded-2xl group-hover:bg-primary/20 transition-colors">
+                <i data-lucide="activity" class="text-primary w-6 h-6"></i>
               </div>
-              <button id="random-theme-btn" class="bg-primary text-black font-bold py-2 px-6 rounded-full hover:scale-105 active:scale-95 transition-transform shadow-lg shadow-primary/20">Randomize</button>
+              <h3 class="text-xl font-bold tracking-tight">Theme Randomizer</h3>
             </div>
-            <p class="text-sm text-neutral-400">Can't decide on a color? Let the algorithm choose a random theme for you.</p>
+            <p class="text-sm text-neutral-400 mb-8 flex-1 leading-relaxed">
+              Dynamically switch system aesthetics. Let the algorithm curate a random structural theme for your viewing experience.
+            </p>
+            <button id="random-theme-btn" class="w-full bg-primary text-black font-black uppercase tracking-widest text-xs py-4 px-6 rounded-xl hover:scale-[1.02] active:scale-95 transition-all shadow-lg shadow-primary/20 hover:shadow-primary/40">Randomize</button>
           </div>
-          <div class="glass p-8 rounded-3xl space-y-6 group hover:border-purple-400/30 transition-all duration-500">
-            <div class="flex items-center justify-between">
-              <div class="flex items-center gap-3">
-                <div class="p-3 bg-purple-400/10 rounded-xl group-hover:bg-purple-400/20 transition-colors">
-                  <i data-lucide="zap" class="text-purple-400 w-5 h-5"></i>
-                </div>
-                <h3 class="text-xl font-bold">Particle Wave</h3>
+
+          <div class="glass p-8 rounded-[2rem] flex flex-col h-full group hover:border-purple-400/30 transition-all duration-500 shadow-xl">
+            <div class="flex items-center gap-4 mb-6">
+              <div class="p-3 bg-purple-400/10 rounded-2xl group-hover:bg-purple-400/20 transition-colors">
+                <i data-lucide="zap" class="text-purple-400 w-6 h-6"></i>
               </div>
-              <button id="particle-wave-btn" class="bg-purple-400 text-black font-bold py-2 px-6 rounded-full hover:scale-105 active:scale-95 transition-transform shadow-lg shadow-purple-400/20">Toggle</button>
+              <h3 class="text-xl font-bold tracking-tight">Particle Wave</h3>
             </div>
-            <p class="text-sm text-neutral-400">Toggle a high-performance 3D particle wave background using Three.js.</p>
+            <p class="text-sm text-neutral-400 mb-8 flex-1 leading-relaxed">
+              Toggle a high-performance 3D particle wave background engineered with Three.js for maximum visual depth.
+            </p>
+            <button id="particle-wave-btn" class="w-full bg-purple-400 text-black font-black uppercase tracking-widest text-xs py-4 px-6 rounded-xl hover:scale-[1.02] active:scale-95 transition-all shadow-lg shadow-purple-400/20 hover:shadow-purple-400/40">Toggle</button>
           </div>
-          <div class="glass p-8 rounded-3xl space-y-6 group hover:border-amber-400/30 transition-all duration-500">
-            <div class="flex items-center justify-between">
-              <div class="flex items-center gap-3">
-                <div class="p-3 bg-amber-400/10 rounded-xl group-hover:bg-amber-400/20 transition-colors">
-                  <i data-lucide="gamepad-2" class="text-amber-400 w-5 h-5"></i>
-                </div>
-                <h3 class="text-xl font-bold">3D Physics World</h3>
+
+          <div class="glass p-8 rounded-[2rem] flex flex-col h-full group hover:border-amber-400/30 transition-all duration-500 shadow-xl">
+            <div class="flex items-center gap-4 mb-6">
+              <div class="p-3 bg-amber-400/10 rounded-2xl group-hover:bg-amber-400/20 transition-colors">
+                <i data-lucide="gamepad-2" class="text-amber-400 w-6 h-6"></i>
               </div>
-              <button id="physics-world-btn" class="bg-amber-400 text-black font-bold py-2 px-6 rounded-full hover:scale-105 active:scale-95 transition-transform shadow-lg shadow-amber-400/20">Enter</button>
+              <h3 class="text-xl font-bold tracking-tight">3D Physics World</h3>
             </div>
-            <p class="text-sm text-neutral-400">A mini 3D interactive world with physics, inspired by Bruno Simon's portfolio.</p>
+            <p class="text-sm text-neutral-400 mb-8 flex-1 leading-relaxed">
+              An immersive 3D sandpit utilizing cannon-es physics. Inspired by high-end creative engineering portfolios.
+            </p>
+            <button id="physics-world-btn" class="w-full bg-amber-400 text-black font-black uppercase tracking-widest text-xs py-4 px-6 rounded-xl hover:scale-[1.02] active:scale-95 transition-all shadow-lg shadow-amber-400/20 hover:shadow-amber-400/40">Enter</button>
           </div>
         </div>
       </section>
@@ -1953,6 +1977,7 @@ async function initHome() {
   setupMobileMenu();
   initTypingAnimation();
   fetchGitHubStats();
+  initAnimations();
   
   // Sticky Nav Logic
   const nav = document.getElementById('main-nav');
@@ -2474,7 +2499,7 @@ async function initHome() {
       }
     });
 
-    createIcons({ icons: { Github, Linkedin, Mail, ArrowRight, Download, Code2, Terminal, ExternalLink, ArrowLeft, Send, Bot, User, Loader2, CheckCircle2, ChevronLeft, ChevronRight, Sparkles, X, Menu, Cpu, BookOpen, Activity, Play, Star, MessageSquare, Zap, ShieldCheck, Layout, Database, Server } });
+    createIcons({ icons: { Github, Linkedin, Mail, ArrowRight, Download, Code2, Terminal, ExternalLink, ArrowLeft, Send, Bot, User, Loader2, CheckCircle2, ChevronLeft, ChevronRight, Sparkles, X, Menu, Cpu, BookOpen, Activity, Play, Star, MessageSquare, Zap, ShieldCheck, Layout, Database, Server, Eye, FileText, WifiOff } });
   }
 }
 

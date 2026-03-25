@@ -284,6 +284,13 @@ export class BackgroundManager {
     render();
   }
 
+  private setupEventListeners() {
+    window.addEventListener('mousemove', (e) => {
+      this.targetMouseX = e.clientX / window.innerWidth;
+      this.targetMouseY = 1.0 - (e.clientY / window.innerHeight);
+    });
+  }
+
   public destroy() {
     if (this.animationId) cancelAnimationFrame(this.animationId);
     if (this.renderer) this.renderer.dispose();
