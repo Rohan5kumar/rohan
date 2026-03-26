@@ -8,7 +8,9 @@ import confetti from 'canvas-confetti';
 import { GoogleGenAI } from "@google/genai";
 import mermaid from 'mermaid';
 import { initModalBridge } from './modalBridge';
-import { initBackground } from './components/Background';
+import React from 'react';
+import { createRoot } from 'react-dom/client';
+import { IronManCanvas } from './components/IronMan';
 
 mermaid.initialize({
   startOnLoad: false,
@@ -496,8 +498,12 @@ window.addEventListener('popstate', router);
 
 
 document.addEventListener('DOMContentLoaded', () => {
-  // Initialize new Background system
-  initBackground();
+  // Initialize new 3D Background system
+  const bgContainer = document.getElementById('background-container');
+  if (bgContainer) {
+    const root = createRoot(bgContainer);
+    root.render(React.createElement(IronManCanvas));
+  }
   
   // Add global elements
   const body = document.body;
