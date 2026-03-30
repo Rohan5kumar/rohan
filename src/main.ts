@@ -910,9 +910,9 @@ function renderHome() {
         </div>
         
         <div class="hidden md:flex items-center gap-8">
-          <a href="#hero" class="text-xs font-bold uppercase tracking-widest text-primary hover:bloom-amber transition-all underline-offset-8">Experience</a>
-          <a href="#services" class="text-xs font-bold uppercase tracking-widest text-neutral-400 hover:text-white transition-all">Testimonials</a>
-          <a href="#skills" class="text-xs font-bold uppercase tracking-widest text-neutral-400 hover:text-white transition-all">Certificates</a>
+          <a href="#experience" class="text-xs font-bold uppercase tracking-widest text-primary hover:bloom-amber transition-all underline-offset-8">Experience</a>
+          <a href="#testimonials" class="text-xs font-bold uppercase tracking-widest text-neutral-400 hover:text-white transition-all">Testimonials</a>
+          <a href="#skills" class="text-xs font-bold uppercase tracking-widest text-neutral-400 hover:text-white transition-all">Skills</a>
           <a href="#contact" class="text-xs font-bold uppercase tracking-widest text-neutral-400 hover:text-white transition-all">Contact</a>
         </div>
 
@@ -920,6 +920,15 @@ function renderHome() {
           <i data-lucide="menu" class="w-5 h-5"></i>
         </button>
       </nav>
+
+      <div id="mobile-menu" class="md:hidden fixed top-20 left-0 right-0 mx-6 p-6 glass-refined rounded-3xl opacity-0 invisible translate-y-4 transition-all duration-300">
+        <div class="flex flex-col gap-4 text-center text-sm font-semibold">
+          <a href="#experience" class="mobile-nav-link text-white hover:text-primary transition-colors">Experience</a>
+          <a href="#testimonials" class="mobile-nav-link text-white hover:text-primary transition-colors">Testimonials</a>
+          <a href="#skills" class="mobile-nav-link text-white hover:text-primary transition-colors">Skills</a>
+          <a href="#contact" class="mobile-nav-link text-white hover:text-primary transition-colors">Contact</a>
+        </div>
+      </div>
 
       <section id="hero" class="min-h-screen flex flex-col items-center justify-center pt-32 pb-20 text-center">
         <div class="max-w-4xl mx-auto" id="hero-text">
@@ -963,8 +972,6 @@ function renderHome() {
         </div>
       </section>
 
-      </section>
-
       <!-- Services Section -->
       <section id="services" class="mb-32">
         <div class="container mx-auto px-6">
@@ -979,7 +986,7 @@ function renderHome() {
                 <i data-lucide="layout" class="text-primary w-12 h-12 group-hover:scale-110 transition-transform"></i>
               </div>
               <h3 class="text-2xl font-bold mb-4">Web Design</h3>
-              <p class="text-text-muted leading-relaxed">
+              <p class="text-muted leading-relaxed">
                 Creating visually stunning and user-centric designs that elevate your brand and provide seamless experiences.
               </p>
               <a href="#contact" class="inline-block mt-6 text-primary font-bold hover:underline">Learn More →</a>
@@ -990,7 +997,7 @@ function renderHome() {
                 <i data-lucide="code-2" class="text-primary w-12 h-12 group-hover:scale-110 transition-transform"></i>
               </div>
               <h3 class="text-2xl font-bold mb-4">Web Development</h3>
-              <p class="text-text-muted leading-relaxed">
+              <p class="text-muted leading-relaxed">
                 Building robust, scalable applications with clean code and high performance using modern frameworks.
               </p>
               <a href="#contact" class="inline-block mt-6 text-primary font-bold hover:underline">Learn More →</a>
@@ -1001,7 +1008,7 @@ function renderHome() {
                 <i data-lucide="cpu" class="text-primary w-12 h-12 group-hover:scale-110 transition-transform"></i>
               </div>
               <h3 class="text-2xl font-bold mb-4">System Architecture</h3>
-              <p class="text-text-muted leading-relaxed">
+              <p class="text-muted leading-relaxed">
                 Designing complex digital ecosystems and cloud infrastructure optimized for massive scale.
               </p>
               <a href="#contact" class="inline-block mt-6 text-primary font-bold hover:underline">Learn More →</a>
